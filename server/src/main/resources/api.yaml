@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  title: "Kafkalyze API"
+  description: "API documentation for the Kafkalyze server"
+  version: "0.0.1"
+externalDocs:
+  description: "Find out more about Kafkalyze"
+  url: "https://github.com/tntmeijs/kafkalyze"
+servers:
+  - url: "http://localhost:8080/api"
+tags:
+  - name: "admin"
+    description: "Kafka admin operations"
+  - name: "topics"
+    description: "Kafka topic operations"
+paths:
+  /api/v1/topics:
+    get:
+      tags:
+        - "topics"
+      summary: "Fetch all topics"
+      description: "Fetch all available topics on the Kafka broker"
+      operationId: "getAllTopics"
+      responses:
+        "200":
+          description: "Successfully fetched topic information"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicInformationV1"
+components:
+  schemas:
+    TopicInformationV1:
+      type: object
+      properties:
+        topics:
+          type: array
+          items:
+            type: string
+            examples: ["dev.tahar.topic.sample.a", "dev.tahar.topic.sample.b"]
