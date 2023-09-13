@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   title: "Kafkalyze API"
   description: "API documentation for the Kafkalyze server"
@@ -7,10 +7,10 @@ externalDocs:
   description: "Find out more about Kafkalyze"
   url: "https://github.com/tntmeijs/kafkalyze"
 servers:
-  - url: "http://localhost:8080/api"
+  - url: "http://localhost:8080"
 tags:
-  - name: "admin"
-    description: "Kafka admin operations"
+  - name: "events"
+    description: "Kafka event operations"
   - name: "topics"
     description: "Kafka topic operations"
 paths:
@@ -28,13 +28,94 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TopicInformationV1"
+    post:
+      tags:
+        - "topics"
+      summary: "Create a new topic"
+      description: "Create a new topic on the Kafka broker"
+      operationId: "createNewTopic"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNewTopicV1"
+      responses:
+        "200":
+          description: "Successfully created the new topic"
+        "400":
+          description: "Failed to create the new topic"
+    delete:
+      tags:
+        - "topics"
+      summary: "Delete an existing topic"
+      description: "Delete an existing topic from the Kafka broker"
+      operationId: "deleteExistingTopic"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteTopicV1"
+      responses:
+        "200":
+          description: "Successfully deleted the topic"
+        "400":
+          description: "Failed to delete the topic"
+  /api/v1/events:
+    post:
+      tags:
+        - "events"
+      summary: "Produce a message to Kafka"
+      description: "Produce a string message to the specified Kafka topic"
+      operationId: "produceStringEventV1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProduceStringEventV1"
+      responses:
+        "200":
+          description: "Event was produced"
 components:
   schemas:
     TopicInformationV1:
       type: object
+      description: "List of all available topics on the Kafka broker"
       properties:
         topics:
           type: array
           items:
             type: string
-            examples: ["dev.tahar.topic.sample.a", "dev.tahar.topic.sample.b"]
+          example: [ "dev.tahar.topic.sample.a", "dev.tahar.topic.sample.b" ]
+    CreateNewTopicV1:
+      type: object
+      description: "Information needed to create a new topic"
+      properties:
+        name:
+          type: string
+          example: "dev.tahar.topic.sample.a"
+        partitionCount:
+          type: integer
+          example: 4
+        replicationFactor:
+          type: integer
+          example: 2
+    DeleteTopicV1:
+      type: object
+      description: "Information needed to delete an existing topic"
+      properties:
+        name:
+          type: string
+          example: "dev.tahar.topic.sample.a"
+    ProduceStringEventV1:
+      type: object
+      description: "Payload needed to produce the event to Kafka"
+      properties:
+        data:
+          type: string
+          example: "{ \"key\": \"hello\", \"value\": \"world\" }"
+        topic:
+          type: string
+          example: "dev.tahar.topic.sample.a"

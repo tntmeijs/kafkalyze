@@ -48,14 +48,14 @@ openApiGenerate {
             annotationLibrary    : "none",
             documentationProvider: "none",
             interfaceOnly        : "true",
-            openApiNullable: "false",
+            openApiNullable      : "false",
             skipDefaultInterface : "true",
             useOptional          : "true",
             useSpringBoot3       : "true",
             useTags              : "true",
     ]
     globalProperties = [
-            apis: "",
+            apis  : "",
             models: "",
     ]
 }
@@ -72,4 +72,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-compileJava.dependsOn tasks.openApiGenerate
+tasks.compileJava.dependsOn(tasks.openApiGenerate)
