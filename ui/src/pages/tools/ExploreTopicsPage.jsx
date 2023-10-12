@@ -6,7 +6,7 @@ export const ExploreTopicsPage = () => {
     const [topics, setTopics] = useState([]);
 
     useEffect(() => pollTopics(), []);
-    // useInterval(() => pollTopics(), 5_000);
+    useInterval(() => pollTopics(), 5_000);
 
     const pollTopics = () => {
         fetch("/api/v1/topics")
@@ -16,6 +16,6 @@ export const ExploreTopicsPage = () => {
     };
 
     return (
-        <TopicList topics={topics} />
+        <TopicList topics={topics} onNewTopicAdded={() => pollTopics()} />
     );
 };

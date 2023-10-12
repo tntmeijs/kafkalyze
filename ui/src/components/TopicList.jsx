@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Modal } from "./Modal";
+import { CreateTopicForm } from "./CreateTopicForm";
 
-export const TopicList = ({ topics }) => {
+export const TopicList = ({ topics, onNewTopicAdded }) => {
     const [searchQuery, setSearchQuery] = useState("");
+    const [displayCreateTopicPopup, setDisplayCreateTopicPopup] = useState(false);
 
     const disableCreateTopicButton = () => {
         return !topics || topics.length === 0 || applyTopicFilter().length > 0;
@@ -12,7 +15,7 @@ export const TopicList = ({ topics }) => {
             return [];
         }
 
-        return topics.filter(topic => topic.includes(searchQuery));
+        return topics.filter(topic => topic.toLowerCase().includes(searchQuery.toLowerCase()));
     };
 
     return (
@@ -23,14 +26,17 @@ export const TopicList = ({ topics }) => {
 
             <div className="panel-block">
                 <p className="control has-icons-left">
-                    <input className="input" type="text" placeholder="Search" value={searchQuery} onChange={e => setSearchQuery(e.target.value.toLowerCase().trim())} />
+                    <input className="input" type="text" placeholder="Search" value={searchQuery} onChange={e => setSearchQuery(e.target.value.trim())} />
                     <span className="icon is-left">
                         <i className="fas fa-search"></i>
                     </span>
                 </p>
 
                 <div className="panel-block">
-                    <button className={`button is-fullwidth ${disableCreateTopicButton() ? "" : "is-success is-outlined"}`} disabled={disableCreateTopicButton()}>
+                    <button
+                        className={`button is-fullwidth ${disableCreateTopicButton() ? "" : "is-success"}`}
+                        disabled={disableCreateTopicButton()}
+                        onClick={() => setDisplayCreateTopicPopup(true)}>
                         create new topic
                     </button>
                 </div>
@@ -44,6 +50,20 @@ export const TopicList = ({ topics }) => {
                     {value}
                 </a>
             ))}
+
+            {displayCreateTopicPopup && (
+                <Modal>
+                    <CreateTopicForm
+                        defaultTopicName={searchQuery}
+                        onCancel={() => setDisplayCreateTopicPopup(false)}
+                        onSuccess={() => {
+                            !!onNewTopicAdded && onNewTopicAdded();
+                            setDisplayCreateTopicPopup(false);
+                            setSearchQuery("");
+                        }}
+                        onFailure={error => console.error(`Failed to create topic: ${error}`)} />
+                </Modal>
+            )}
         </nav>
     );
 };

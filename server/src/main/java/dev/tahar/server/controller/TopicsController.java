@@ -10,8 +10,6 @@ import org.openapitools.model.TopicInformationV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 @RestController
 @RequiredArgsConstructor
 public class TopicsController implements TopicsApi {
@@ -51,7 +49,7 @@ public class TopicsController implements TopicsApi {
     @Override
     public ResponseEntity<TopicInformationV1> getAllTopics() {
         final var response = new TopicInformationV1();
-        response.setTopics(new ArrayList<>(topicService.getAllTopics().keySet()));
+        response.setTopics(topicService.getAllTopics().keySet().stream().sorted().toList());
 
         return ResponseEntity.ok(response);
     }
