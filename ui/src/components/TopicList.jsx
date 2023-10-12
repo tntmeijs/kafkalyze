@@ -7,7 +7,7 @@ export const TopicList = ({ topics, onNewTopicAdded }) => {
     const [displayCreateTopicPopup, setDisplayCreateTopicPopup] = useState(false);
 
     const disableCreateTopicButton = () => {
-        return !topics || topics.length === 0 || applyTopicFilter().length > 0;
+        return !topics || applyTopicFilter().length > 0;
     };
 
     const applyTopicFilter = () => {
@@ -28,7 +28,7 @@ export const TopicList = ({ topics, onNewTopicAdded }) => {
                 <p className="control has-icons-left">
                     <input className="input" type="text" placeholder="Search" value={searchQuery} onChange={e => setSearchQuery(e.target.value.trim())} />
                     <span className="icon is-left">
-                        <i className="fas fa-search"></i>
+                        <i className="las la-search"></i>
                     </span>
                 </p>
 

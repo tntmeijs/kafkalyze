@@ -61,46 +61,46 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
             </div>
 
             <div className="message-body">
-                <div class="field">
-                    <label class="label">Topic name</label>
-                    <p class="control has-icons-left">
-                        <input class="input" name="topicName" type="text" placeholder="name" defaultValue={defaultTopicName} onChange={onInput} disabled={awaitResponse} />
-                        <span class="icon is-small is-left">
-                            <i class="las la-signature"></i>
+                <div className="field">
+                    <label className="label">Topic name</label>
+                    <p className="control has-icons-left">
+                        <input className="input" name="topicName" type="text" placeholder="name" defaultValue={defaultTopicName} onChange={onInput} disabled={awaitResponse} />
+                        <span className="icon is-small is-left">
+                            <i className="las la-signature"></i>
                         </span>
                     </p>
                 </div>
 
-                <div class="field">
-                    <label class="label">Partition count</label>
-                    <p class="control has-icons-left">
-                        <input class="input" name="partitionCount" min={1} type="number" placeholder="partition count" onChange={onInput} disabled={awaitResponse} />
-                        <span class="icon is-small is-left">
-                            <i class="las la-copy"></i>
+                <div className="field">
+                    <label className="label">Partition count</label>
+                    <p className="control has-icons-left">
+                        <input className="input" name="partitionCount" min={1} type="number" placeholder="partition count" onChange={onInput} disabled={awaitResponse} />
+                        <span className="icon is-small is-left">
+                            <i className="las la-copy"></i>
                         </span>
                     </p>
                 </div>
 
-                <div class="field">
-                    <label class="label">Replication factor</label>
-                    <p class="control has-icons-left">
-                        <input class="input" name="replicationFactor" min={1} type="number" placeholder="replication factor" onChange={onInput} disabled={awaitResponse} />
-                        <span class="icon is-small is-left">
-                            <i class="las la-clone"></i>
+                <div className="field">
+                    <label className="label">Replication factor</label>
+                    <p className="control has-icons-left">
+                        <input className="input" name="replicationFactor" min={1} type="number" placeholder="replication factor" onChange={onInput} disabled={awaitResponse} />
+                        <span className="icon is-small is-left">
+                            <i className="las la-clone"></i>
                         </span>
                     </p>
                 </div>
 
-                <label class="checkbox ml-1">
+                <label className="checkbox ml-1">
                     <input type="checkbox" name="acknowledgement" onChange={onInput} disabled={awaitResponse} />
                     <span className="ml-2">I acknowledge that I understand the consequences of creating a new topic</span>
                 </label>
 
-                <div class="field is-grouped mt-3">
-                    <p class="control">
+                <div className="field is-grouped mt-3">
+                    <p className="control">
                         <button className="button is-info" onClick={() => { onCancel && onCancel() }} disabled={awaitResponse}>cancel</button>
                     </p>
-                    <p class="control">
+                    <p className="control">
                         <button className={`button is-danger is-outlined ${awaitResponse ? "is-loading" : ""}`} onClick={() => createTopic()} disabled={awaitResponse || !allowNewTopicSubmit}>create</button>
                     </p>
                 </div>

@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TopicList } from "../../components/TopicList";
 import { useInterval } from "../../hooks/useInterval";
 
 export const ExploreTopicsPage = () => {
-    const [topics, setTopics] = useState([]);
-
-    useEffect(() => pollTopics(), []);
+    const [topics, setTopics] = useState(null);
     useInterval(() => pollTopics(), 5_000);
 
     const pollTopics = () => {
