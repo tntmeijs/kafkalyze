@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Modal } from "./Modal";
 import { CreateTopicForm } from "./CreateTopicForm";
+import { DeleteTopicForm } from "./DeleteTopicForm";
 
-export const TopicList = ({ topics, onNewTopicAdded }) => {
+export const TopicList = ({ topics, onNewTopicAdded, onTopicDeleted }) => {
     const [searchQuery, setSearchQuery] = useState("");
+    const [topicSelectedForDeletion, setTopicSelectedForDeletion] = useState(null);
     const [displayCreateTopicPopup, setDisplayCreateTopicPopup] = useState(false);
 
     const disableCreateTopicButton = () => {
@@ -43,11 +45,16 @@ export const TopicList = ({ topics, onNewTopicAdded }) => {
             </div>
 
             {applyTopicFilter().map((value, index) => (
-                <a className="panel-block" key={index}>
+                <a className="panel-block flex" key={index}>
                     <span className="panel-icon">
                         <i className="las la-envelope"></i>
                     </span>
-                    {value}
+                    <span className="is-flex-grow-1">{value}</span>
+                    <button className="button" onClick={() => setTopicSelectedForDeletion(value)}>
+                        <span className="icon is-small">
+                            <i className="las la-trash"></i>
+                        </span>
+                    </button>
                 </a>
             ))}
 
@@ -56,12 +63,26 @@ export const TopicList = ({ topics, onNewTopicAdded }) => {
                     <CreateTopicForm
                         defaultTopicName={searchQuery}
                         onCancel={() => setDisplayCreateTopicPopup(false)}
-                        onSuccess={() => {
-                            !!onNewTopicAdded && onNewTopicAdded();
+                        onSuccess={result => {
+                            !!onNewTopicAdded && onNewTopicAdded(result);
                             setDisplayCreateTopicPopup(false);
                             setSearchQuery("");
                         }}
                         onFailure={error => console.error(`Failed to create topic: ${error}`)} />
+                </Modal>
+            )}
+
+            {!!topicSelectedForDeletion && (
+                <Modal>
+                    <DeleteTopicForm
+                        topicName={topicSelectedForDeletion}
+                        onCancel={() => setTopicSelectedForDeletion(null)}
+                        onSuccess={result => {
+                            !!onTopicDeleted && onTopicDeleted(result);
+                            setTopicSelectedForDeletion(null);
+                            setSearchQuery("");
+                        }}
+                        onFailure={error => console.error(`Failed to delete topic: ${error}`)} />
                 </Modal>
             )}
         </nav>

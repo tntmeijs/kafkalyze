@@ -51,7 +51,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 }
             })
             .catch(error => { !!onFailure && onFailure(error) })
-            .finally(() => setTimeout(() => setAwaitResponse(false), 1_000));
+            .finally(() => setAwaitResponse(false));
     };
 
     return (
@@ -101,7 +101,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                         <button className="button is-info" onClick={() => { onCancel && onCancel() }} disabled={awaitResponse}>cancel</button>
                     </p>
                     <p className="control">
-                        <button className={`button is-danger is-outlined ${awaitResponse ? "is-loading" : ""}`} onClick={() => createTopic()} disabled={awaitResponse || !allowNewTopicSubmit}>create</button>
+                        <button className={`button is-success ${awaitResponse || !allowNewTopicSubmit ? "is-outlined" : ""} ${awaitResponse ? "is-loading" : ""}`} onClick={() => createTopic()} disabled={awaitResponse || !allowNewTopicSubmit}>create</button>
                     </p>
                 </div>
             </div>

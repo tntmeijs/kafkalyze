@@ -14,6 +14,9 @@ export const ExploreTopicsPage = () => {
     };
 
     return (
-        <TopicList topics={topics} onNewTopicAdded={() => pollTopics()} />
+        <TopicList
+            topics={topics}
+            onNewTopicAdded={() => pollTopics()}
+            onTopicDeleted={() => pollTopics()} />
     );
 };

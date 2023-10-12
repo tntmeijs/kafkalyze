@@ -45,18 +45,21 @@ paths:
           description: "Successfully created the new topic"
         "400":
           description: "Failed to create the new topic"
+  /api/v1/topics/{name}:
     delete:
       tags:
         - "topics"
       summary: "Delete an existing topic"
       description: "Delete an existing topic from the Kafka broker"
       operationId: "deleteExistingTopic"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DeleteTopicV1"
+      parameters:
+        - in: path
+          name: "name"
+          schema:
+            type: string
+            example: "dev.tahar.topic.sample.a"
+          required: true
+          description: "Name of the topic to delete"
       responses:
         "200":
           description: "Successfully deleted the topic"
@@ -102,13 +105,6 @@ components:
         replicationFactor:
           type: integer
           example: 2
-    DeleteTopicV1:
-      type: object
-      description: "Information needed to delete an existing topic"
-      properties:
-        name:
-          type: string
-          example: "dev.tahar.topic.sample.a"
     ProduceStringEventV1:
       type: object
       description: "Payload needed to produce the event to Kafka"

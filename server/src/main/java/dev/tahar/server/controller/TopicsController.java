@@ -5,7 +5,6 @@ import dev.tahar.server.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.TopicsApi;
 import org.openapitools.model.CreateNewTopicV1;
-import org.openapitools.model.DeleteTopicV1;
 import org.openapitools.model.TopicInformationV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,8 +34,8 @@ public class TopicsController implements TopicsApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteExistingTopic(DeleteTopicV1 deleteTopicV1) {
-        final var result = topicService.deleteTopic(deleteTopicV1.getName());
+    public ResponseEntity<Void> deleteExistingTopic(String name) {
+        final var result = topicService.deleteTopic(name);
 
         return result
                 ? ResponseEntity.ok().build()
