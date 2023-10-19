@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TopicList } from "../../components/TopicList";
+import { TopicList } from "../../components/tools/topics/explorer/TopicList";
 import { useInterval } from "../../hooks/useInterval";
 
 export const ExploreTopicsPage = () => {
