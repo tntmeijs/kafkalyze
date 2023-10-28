@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFormInput } from "../../../../hooks/useFormInput";
 
 const FORM_FIELD_TO_VALIDATION_METHOD = {
     "topicName": topicName => topicName.length > 0 && topicName.length <= 249 && topicName.match("[a-zA-Z0-9\\._\\-]"),
@@ -8,37 +9,25 @@ const FORM_FIELD_TO_VALIDATION_METHOD = {
 };
 
 export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailure }) => {
-    const [input, setInput] = useState({ topicName: defaultTopicName });
-    const [inputErrors, setInputErrors] = useState({ acknowledgement: false });
     const [awaitResponse, setAwaitResponse] = useState(false);
     const [allowNewTopicSubmit, setAllowNewTopicSubmit] = useState(false);
+    const [formInput, onFormInput] = useFormInput({ topicName: defaultTopicName });
 
-    const onInput = event => {
-        const newInput = input;
-        newInput[event.target.name] = event.target.type === "checkbox"
-            ? event.target.checked
-            : event.target.value;
+    // Run form validation after every single input
+    useEffect(() => validateInput(), []);
+    useEffect(() => {
+        console.log(formInput);
+        console.log(Object.keys(formInput).filter(key => FORM_FIELD_TO_VALIDATION_METHOD[key](formInput[key])).length, "===", Object.keys(FORM_FIELD_TO_VALIDATION_METHOD).length);
+        validateInput();
+    }, [formInput]);
 
-        const newInputErrors = inputErrors;
-        newInputErrors[event.target.name] = FORM_FIELD_TO_VALIDATION_METHOD[event.target.name](newInput[event.target.name]);
-
-        // Validation passed - get rid of the error entirely
-        if (!!newInputErrors[event.target.name]) {
-            delete newInputErrors[event.target.name];
-        }
-
-        setInput(newInput);
-        setInputErrors(newInputErrors);
-
-        // Only allow submission if no errror are present AND all fields have been filled out
-        setAllowNewTopicSubmit(Object.entries(inputErrors).length === 0 && Object.entries(input).length === Object.entries(FORM_FIELD_TO_VALIDATION_METHOD).length);
-    };
+    const validateInput = () => setAllowNewTopicSubmit(Object.keys(formInput).length > 0 && Object.keys(formInput).filter(key => FORM_FIELD_TO_VALIDATION_METHOD[key](formInput[key])).length === Object.keys(FORM_FIELD_TO_VALIDATION_METHOD).length);
 
     const createTopic = () => {
         const body = ({
-            name: input.topicName,
-            partitionCount: input.partitionCount,
-            replicationFactor: input.replicationFactor
+            name: formInput.topicName,
+            partitionCount: formInput.partitionCount,
+            replicationFactor: formInput.replicationFactor
         });
 
         setAwaitResponse(true);
@@ -64,7 +53,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 <div className="field">
                     <label className="label">Topic name</label>
                     <p className="control has-icons-left">
-                        <input className="input" name="topicName" type="text" placeholder="name" defaultValue={defaultTopicName} onChange={onInput} disabled={awaitResponse} />
+                        <input className="input" name="topicName" type="text" placeholder="name" defaultValue={defaultTopicName} onChange={onFormInput} disabled={awaitResponse} />
                         <span className="icon is-small is-left">
                             <i className="las la-signature"></i>
                         </span>
@@ -74,7 +63,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 <div className="field">
                     <label className="label">Partition count</label>
                     <p className="control has-icons-left">
-                        <input className="input" name="partitionCount" min={1} type="number" placeholder="partition count" onChange={onInput} disabled={awaitResponse} />
+                        <input className="input" name="partitionCount" min={1} type="number" placeholder="partition count" onChange={onFormInput} disabled={awaitResponse} />
                         <span className="icon is-small is-left">
                             <i className="las la-copy"></i>
                         </span>
@@ -84,7 +73,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 <div className="field">
                     <label className="label">Replication factor</label>
                     <p className="control has-icons-left">
-                        <input className="input" name="replicationFactor" min={1} type="number" placeholder="replication factor" onChange={onInput} disabled={awaitResponse} />
+                        <input className="input" name="replicationFactor" min={1} type="number" placeholder="replication factor" onChange={onFormInput} disabled={awaitResponse} />
                         <span className="icon is-small is-left">
                             <i className="las la-clone"></i>
                         </span>
@@ -92,7 +81,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 </div>
 
                 <label className="checkbox ml-1">
-                    <input type="checkbox" name="acknowledgement" onChange={onInput} disabled={awaitResponse} />
+                    <input type="checkbox" name="acknowledgement" onChange={onFormInput} disabled={awaitResponse} />
                     <span className="ml-2">I acknowledge that I understand the consequences of creating a new topic</span>
                 </label>
 
