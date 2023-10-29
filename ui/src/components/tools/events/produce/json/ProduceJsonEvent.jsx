@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
-import { getAllTopics } from "../../../../services/TopicsService";
-import { useInterval } from "../../../../hooks/useInterval";
-import { useFormInput } from "../../../../hooks/useFormInput";
+import { useState } from "react";
+import { getAllTopics } from "../../../../../services/TopicsService";
+import { useInterval } from "../../../../../hooks/useInterval";
+import { useFormInput } from "../../../../../hooks/useFormInput";
+import { useToggle } from "../../../../../hooks/useToggle";
+import { Modal } from "../../../../Modal";
+import { ProduceJsonEventPreviewModal } from "./ProduceJsonEventPreviewModal";
 
 export const ProduceJsonEvent = () => {
     const [topics, setTopics] = useState(null);
     const [headers, setHeaders] = useState([]);
+    const [showPreviewEvent, toggleShowPreviewEvent] = useToggle();
     const [formInput, onFormInput, removeFormInputWithNames] = useFormInput();
 
     useInterval(() => getAllTopics(setTopics), 5_000);
@@ -25,6 +29,7 @@ export const ProduceJsonEvent = () => {
     };
 
     const disableAddHeaderButton = !formInput.headerKey || !formInput.headerValue || formInput.headerKey.length === 0 || formInput.headerValue.length === 0;
+    const disableProduceEventButton = !formInput.topic || formInput.topic.length === 0 || !formInput.eventData || formInput.eventData.length === 0;
 
     return (
         <>
@@ -33,7 +38,7 @@ export const ProduceJsonEvent = () => {
                     <label className="label">Topic</label>
                     <div className="control has-icons-left">
                         <div className={`select is-fullwidth ${!topics ? "is-loading" : ""}`}>
-                            <select defaultValue="">
+                            <select defaultValue="" name="topic" onChange={onFormInput}>
                                 <option disabled={true} value="">{!topics ? "loading topics..." : "select a topic..."}</option>
                                 {topics && topics.map((topic, index) => (
                                     <option key={index} value={topic}>{topic}</option>
@@ -100,10 +105,16 @@ export const ProduceJsonEvent = () => {
 
                 <div className="field">
                     <p className="control">
-                        <button className="button is-success">Produce event</button>
+                        <button className="button is-success" disabled={disableProduceEventButton} onClick={() => toggleShowPreviewEvent()}>Produce event</button>
                     </p>
                 </div>
             </fieldset>
+
+            {showPreviewEvent &&
+                <Modal>
+                    <ProduceJsonEventPreviewModal topic={formInput.topic} eventData={formInput.eventData} headers={headers} onCancel={() => toggleShowPreviewEvent()} />
+                </Modal>
+            }
         </>
     );
 };

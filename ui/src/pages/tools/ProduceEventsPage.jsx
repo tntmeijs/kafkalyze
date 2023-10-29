@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ProduceJsonEvent } from "../../components/tools/events/produce/ProduceJsonEvent";
+import { ProduceJsonEvent } from "../../components/tools/events/produce/json/ProduceJsonEvent";
 import { ProduceXmlEvent } from "../../components/tools/events/produce/ProduceXmlEvent";
 import { ProduceAvroEvent } from "../../components/tools/events/produce/ProduceAvroEvent";
 import { ProduceProtobufEvent } from "../../components/tools/events/produce/ProduceProtobufEvent";

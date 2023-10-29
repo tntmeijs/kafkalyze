@@ -25,9 +25,9 @@ export const useFormInput = initialState => {
      */
     const removeFormInputWithNames = (...names) => {
         const updatedFormInput = formInput;
-        names.forEach(name => delete updatedFormInput[name])
+        names.forEach(name => delete updatedFormInput[name]);
         setFormInput(updatedFormInput);
     };
 
-    return [formInput, onFormInput, setFormInput, removeFormInputWithNames];
+    return [formInput, onFormInput, removeFormInputWithNames];
 };
