@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllTopics } from "../../../../services/TopicsService";
 import { useInterval } from "../../../../hooks/useInterval";
 import { useFormInput } from "../../../../hooks/useFormInput";
@@ -6,12 +6,13 @@ import { useFormInput } from "../../../../hooks/useFormInput";
 export const ProduceJsonEvent = () => {
     const [topics, setTopics] = useState(null);
     const [headers, setHeaders] = useState([]);
-    const [formInput, onFormInput] = useFormInput();
+    const [formInput, onFormInput, removeFormInputWithNames] = useFormInput();
 
     useInterval(() => getAllTopics(setTopics), 5_000);
 
     const onAddNewHeader = () => {
         setHeaders([...headers, { key: formInput.headerKey, value: formInput.headerValue }]);
+        removeFormInputWithNames("headerKey", "headerValue");
     };
 
     const onDeleteHeader = indexToDelete => {
@@ -50,10 +51,10 @@ export const ProduceJsonEvent = () => {
                     <label className="label">Headers</label>
                     <div className="field is-grouped">
                         <div className="control">
-                            <input className="input" type="text" name="headerKey" value={formInput.headerKey} placeholder="key" onChange={onFormInput} />
+                            <input className="input" type="text" name="headerKey" value={formInput.headerKey ?? ""} placeholder="key" onChange={onFormInput} />
                         </div>
                         <div className="control">
-                            <input className="input" type="text" name="headerValue" value={formInput.headerValue} placeholder="value" onChange={onFormInput} />
+                            <input className="input" type="text" name="headerValue" value={formInput.headerValue ?? ""} placeholder="value" onChange={onFormInput} />
                         </div>
                         <div className="control">
                             <button className={`button is-info ${disableAddHeaderButton ? "is-outlined" : ""}`} onClick={() => onAddNewHeader()} disabled={disableAddHeaderButton}>
