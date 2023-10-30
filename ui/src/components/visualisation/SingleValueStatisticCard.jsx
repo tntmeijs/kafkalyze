@@ -1,12 +1,4 @@
-export const DashboardStatisticCardHighlightColor = {
-    PRIMARY: "is-primary",
-    INFO: "is-info",
-    SUCCESS: "is-success",
-    WARNING: "is-warning",
-    DANGER: "is-danger"
-};
-
-export const DashboardStatisticCard = ({ title, value, unit, colour }) => (
+export const SingleValueStatisticCard = ({ title, value, unit, colour }) => (
     <div className="card">
         <div className={`card-content highlight-bottom is-uppercase ${colour}`}>
             <div className="content">
