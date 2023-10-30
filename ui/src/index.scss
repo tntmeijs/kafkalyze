@@ -1,2 +1,26 @@
 @charset "utf-8";
 @import "../node_modules/bulma/bulma.sass";
+
+.highlight-bottom {
+    border-bottom: 0.35rem solid $black;
+
+    &.is-primary {
+        border-bottom-color: $primary;
+    }
+
+    &.is-info {
+        border-bottom-color: $info;
+    }
+
+    &.is-success {
+        border-bottom-color: $success;
+    }
+
+    &.is-warning {
+        border-bottom-color: $warning;
+    }
+
+    &.is-danger {
+        border-bottom-color: $danger;
+    }
+}
