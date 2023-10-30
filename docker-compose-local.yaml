@@ -48,17 +48,6 @@ services:
       - kafkalyze
     restart: always
 
-  prometheus:
-    container_name: kafkalyze-local-prometheus
-    image: bitnami/prometheus:latest
-    ports:
-      - '9090:9090'
-    volumes:
-      - prometheus_data:/app
-    networks:
-      kafkalyze:
-    restart: always
-
 volumes:
   zookeeper_data:
   kafka_data:
