@@ -1,12 +1,27 @@
 import { useState } from "react";
 import { useFormInput } from "../../../../../hooks/useFormInput";
 
-export const ProduceJsonEventPreviewModal = ({ topic, eventData, onCancel, headers = [] }) => {
+export const ProduceJsonEventPreviewModal = ({ topic, eventData, onCancel, onSuccess, onFailure, headers = [] }) => {
     const [awaitResponse, setAwaitResponse] = useState(false);
     const [formInput, onFormInput] = useFormInput();
 
     const produceEvent = () => {
+        const body = {
+            topic: topic,
+            data: eventData
+        };
+
         setAwaitResponse(true);
+        fetch("/api/v1/events", { method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } })
+            .then(response => {
+                if (response.ok) {
+                    !!onSuccess && onSuccess(body);
+                } else {
+                    !!onFailure && onFailure(`Request failed with status code HTTP ${response.status} (${response.statusText})`);
+                }
+            })
+            .catch(error => { !!onFailure && onFailure(error) })
+            .finally(() => setAwaitResponse(false));
     };
 
     return (

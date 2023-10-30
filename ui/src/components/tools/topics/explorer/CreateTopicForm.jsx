@@ -36,7 +36,7 @@ export const CreateTopicForm = ({ defaultTopicName, onCancel, onSuccess, onFailu
                 if (response.ok) {
                     !!onSuccess && onSuccess(body);
                 } else {
-                    !!onFailure && onFailure(`request failed with status code HTTP ${response.status} (${response.statusText})`);
+                    !!onFailure && onFailure(`Request failed with status code HTTP ${response.status} (${response.statusText})`);
                 }
             })
             .catch(error => { !!onFailure && onFailure(error) })

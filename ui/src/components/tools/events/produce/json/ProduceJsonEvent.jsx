@@ -112,7 +112,13 @@ export const ProduceJsonEvent = () => {
 
             {showPreviewEvent &&
                 <Modal>
-                    <ProduceJsonEventPreviewModal topic={formInput.topic} eventData={formInput.eventData} headers={headers} onCancel={() => toggleShowPreviewEvent()} />
+                    <ProduceJsonEventPreviewModal
+                        topic={formInput.topic}
+                        eventData={formInput.eventData}
+                        headers={headers}
+                        onCancel={() => toggleShowPreviewEvent()}
+                        onFailure={() => toggleShowPreviewEvent()}
+                        onSuccess={() => toggleShowPreviewEvent()} />
                 </Modal>
             }
         </>
