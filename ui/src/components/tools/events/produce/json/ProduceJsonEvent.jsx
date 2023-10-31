@@ -10,7 +10,7 @@ export const ProduceJsonEvent = () => {
     const [topics, setTopics] = useState(null);
     const [headers, setHeaders] = useState([]);
     const [showPreviewEvent, toggleShowPreviewEvent] = useToggle();
-    const [formInput, onFormInput, removeFormInputWithNames] = useFormInput();
+    const [formInput, onFormInput, removeFormInputWithNames] = useFormInput({});
 
     useInterval(() => getAllTopics(setTopics), 5_000);
 
@@ -33,82 +33,81 @@ export const ProduceJsonEvent = () => {
 
     return (
         <>
-            <fieldset disabled={!topics}>
-                <div className="field">
-                    <label className="label">Topic</label>
-                    <div className="control has-icons-left">
-                        <div className={`select is-fullwidth ${!topics ? "is-loading" : ""}`}>
-                            <select defaultValue="" name="topic" onChange={onFormInput}>
-                                <option disabled={true} value="">{!topics ? "loading topics..." : "select a topic..."}</option>
-                                {topics && topics.map((topic, index) => (
-                                    <option key={index} value={topic}>{topic}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <span className="icon is-medium is-left">
-                            <i className="las la-envelope"></i>
-                        </span>
+            <div className="field">
+                <label className="label">Topic</label>
+                <div className="control has-icons-left">
+                    <div className={`select is-fullwidth ${!topics ? "is-loading" : ""}`}>
+                        <select defaultValue="" name="topic" onChange={onFormInput}>
+                            <option disabled={true} value="">{!topics ? "loading topics..." : "select a topic..."}</option>
+                            {topics && topics.map((topic, index) => (
+                                <option key={index} value={topic}>{topic}</option>
+                            ))}
+                        </select>
                     </div>
+
+                    <span className="icon is-medium is-left">
+                        <i className="las la-envelope"></i>
+                    </span>
                 </div>
+            </div>
 
-                <div className="field">
-                    <label className="label">Headers</label>
-                    <div className="field is-grouped">
-                        <div className="control">
-                            <input className="input" type="text" name="headerKey" value={formInput.headerKey ?? ""} placeholder="key" onChange={onFormInput} />
-                        </div>
-                        <div className="control">
-                            <input className="input" type="text" name="headerValue" value={formInput.headerValue ?? ""} placeholder="value" onChange={onFormInput} />
-                        </div>
-                        <div className="control">
-                            <button className={`button is-info ${disableAddHeaderButton ? "is-outlined" : ""}`} onClick={() => onAddNewHeader()} disabled={disableAddHeaderButton}>
-                                <span className="icon is-medium">
-                                    <i className="las la-plus"></i>
-                                </span>
-                                <span>add header</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {headers.map((header, index) => (
-                    <div key={index} className="field is-grouped">
-                        <div className="control">
-                            <input className="input" type="text" value={header.key} readOnly={true} />
-                        </div>
-                        <div className="control">
-                            <input className="input" type="text" value={header.value} readOnly={true} />
-                        </div>
-                        <div className="control">
-                            <button className="button is-danger is-inverted" onClick={() => onDeleteHeader(index)}>
-                                <span className="icon is-medium">
-                                    <i className="las la-minus"></i>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                ))}
-
-                <div className="field">
-                    <label className="label">Event data</label>
+            <div className="field">
+                <label className="label">Headers</label>
+                <div className="field is-grouped">
                     <div className="control">
-                        <textarea
-                            className="textarea has-fixed-size"
-                            name="eventData"
-                            placeholder="{ }"
-                            value={formInput.eventData}
-                            onChange={onFormInput}>
-                        </textarea>
+                        <input className="input" type="text" name="headerKey" value={formInput.headerKey ?? ""} placeholder="key" onChange={onFormInput} />
+                    </div>
+                    <div className="control">
+                        <input className="input" type="text" name="headerValue" value={formInput.headerValue ?? ""} placeholder="value" onChange={onFormInput} />
+                    </div>
+                    <div className="control">
+                        <button className={`button is-info ${disableAddHeaderButton ? "is-outlined" : ""}`} onClick={() => onAddNewHeader()} disabled={disableAddHeaderButton}>
+                            <span className="icon is-medium">
+                                <i className="las la-plus"></i>
+                            </span>
+                            <span>add header</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div className="field">
-                    <p className="control">
-                        <button className="button is-success" disabled={disableProduceEventButton} onClick={() => toggleShowPreviewEvent()}>Produce event</button>
-                    </p>
+            {headers.map((header, index) => (
+                <div key={index} className="field is-grouped">
+                    <div className="control">
+                        <input className="input" type="text" value={header.key} readOnly={true} />
+                    </div>
+                    <div className="control">
+                        <input className="input" type="text" value={header.value} readOnly={true} />
+                    </div>
+                    <div className="control">
+                        <button className="button is-danger is-inverted" onClick={() => onDeleteHeader(index)}>
+                            <span className="icon is-medium">
+                                <i className="las la-minus"></i>
+                            </span>
+                        </button>
+                    </div>
                 </div>
-            </fieldset>
+            ))}
+
+            <div className="field">
+                <label className="label">Event data</label>
+                <div className="control">
+                    <textarea
+                        className="textarea has-fixed-size"
+                        name="eventData"
+                        placeholder="{ }"
+                        value={formInput.eventData}
+                        onChange={onFormInput}
+                    >
+                    </textarea>
+                </div>
+            </div>
+
+            <div className="field">
+                <p className="control">
+                    <button className="button is-success" disabled={disableProduceEventButton} onClick={() => toggleShowPreviewEvent()}>Produce event</button>
+                </p>
+            </div>
 
             {showPreviewEvent &&
                 <Modal>
