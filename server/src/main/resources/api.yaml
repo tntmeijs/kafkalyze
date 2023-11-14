@@ -13,6 +13,8 @@ tags:
     description: "Kafka event operations"
   - name: "topics"
     description: "Kafka topic operations"
+  - name: "statistics"
+    description: "System statistics for dashboarding purposes"
 paths:
   /api/v1/topics:
     get:
@@ -81,6 +83,20 @@ paths:
       responses:
         "200":
           description: "Event was produced"
+  /api/v1/statistics/kafka/events:
+    get:
+      tags:
+        - "statistics"
+      summary: "Fetch statistics about Kafka events"
+      description: "Fetch statistics about Kafka events such as how many events are stored, events consumed per hour, and more"
+      operationId: "fetchEventStatistics"
+      responses:
+        "200":
+          description: "Statistics were fetched successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventStatisticsV1"
 components:
   schemas:
     TopicInformationV1:
@@ -115,3 +131,10 @@ components:
         topic:
           type: string
           example: "dev.tahar.topic.sample.a"
+    EventStatisticsV1:
+      type: object
+      description: "Statistics about consumed events"
+      properties:
+        databaseSizeInBytes:
+          type: integer
+          example: 1500000000

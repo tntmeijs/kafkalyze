@@ -4,25 +4,52 @@ import dev.tahar.server.kafka.model.CreateTopicInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.admin.Admin;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.admin.TopicListing;
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Uuid;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TopicService {
+public class KafkaAdminService {
 
     private final Admin admin;
+
+//    public Map<String, List<String>> getConsumersOfTopics(@NonNull final String... topics) {
+//        final var result = new HashMap<String, List<String>>();
+//
+//        try {
+//            final var allConsumerGroups = admin
+//                    .listConsumerGroups()
+//                    .all()
+//                    .get()
+//                    .stream()
+//                    .map(ConsumerGroupListing::groupId)
+//                    .toList();
+//
+//            final var topicNameToDescription = admin
+//                    .describeTopics(List.of(topics))
+//                    .topicNameValues();
+//
+//            KafkaFuture.allOf(topicNameToDescription.values().toArray(new KafkaFuture[0])).get();
+//
+//            for (final var entry : topicNameToDescription.entrySet()) {
+//                final var topicDescription = entry.getValue().get();
+//            }
+//
+//
+//        } catch (InterruptedException e) {
+//            log.error("Interrupted exception occurred while listing topics");
+//            Thread.currentThread().interrupt();
+//        } catch (ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * Fetch all topics along with their ids from the Kafka broker
