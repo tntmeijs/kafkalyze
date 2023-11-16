@@ -122,7 +122,7 @@ export const OverviewPage = () => {
                     </thead>
                     <tbody>
                         {clusterStatistics?.nodes.map((node, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <td>{node.id}</td>
                                 <td>{node.hostname}</td>
                                 <td>{node.port}</td>
