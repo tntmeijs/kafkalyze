@@ -1,4 +1,4 @@
-package dev.tahar.server.kafka.model;
+package dev.tahar.server.model;
 
 import lombok.NonNull;
 

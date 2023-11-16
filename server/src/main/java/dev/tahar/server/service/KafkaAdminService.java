@@ -1,11 +1,13 @@
 package dev.tahar.server.service;
 
-import dev.tahar.server.kafka.model.CreateTopicInfo;
+import dev.tahar.server.model.ClusterNodeInformation;
+import dev.tahar.server.model.CreateTopicInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.admin.*;
-import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicListing;
 import org.apache.kafka.common.Uuid;
 import org.springframework.stereotype.Service;
 
@@ -145,6 +147,41 @@ public class KafkaAdminService {
         }
 
         return results;
+    }
+
+    /**
+     * Fetch information about the nodes in the cluster
+     *
+     * @return List of {@link ClusterNodeInformation}, empty on failure or if the cluster has no nodes
+     */
+    public List<ClusterNodeInformation> getNodesInCluster() {
+        final var clusterInfo = admin.describeCluster();
+
+        try {
+            final var controllerId = clusterInfo
+                    .controller()
+                    .get()
+                    .id();
+
+            return clusterInfo
+                    .nodes()
+                    .get()
+                    .stream()
+                    .map(node -> new ClusterNodeInformation(
+                            node.id(),
+                            node.host(),
+                            node.port(),
+                            node.rack(),
+                            node.id() == controllerId))
+                    .toList();
+        } catch (InterruptedException e) {
+            log.error("Interrupted exception occurred while describing the Kafka cluster:", e);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            log.error("Execution exception occurred while deleting topics:", e);
+        }
+
+        return Collections.emptyList();
     }
 
 }

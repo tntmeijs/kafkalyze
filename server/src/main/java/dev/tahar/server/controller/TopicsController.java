@@ -1,6 +1,6 @@
 package dev.tahar.server.controller;
 
-import dev.tahar.server.kafka.model.CreateTopicInfo;
+import dev.tahar.server.model.CreateTopicInfo;
 import dev.tahar.server.service.KafkaAdminService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.TopicsApi;

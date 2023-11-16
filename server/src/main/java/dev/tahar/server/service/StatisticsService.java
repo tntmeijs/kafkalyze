@@ -1,7 +1,7 @@
 package dev.tahar.server.service;
 
 import dev.tahar.server.database.CollectionStatistics;
-import dev.tahar.server.kafka.model.KafkaBrokerStatistics;
+import dev.tahar.server.model.KafkaClusterStatistics;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +9,6 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,16 +35,9 @@ public class StatisticsService {
                 result.getInteger("size"));
     }
 
-    public Optional<KafkaBrokerStatistics> getForKafkaBroker() {
-        final var topics = kafkaAdminService
-                .getAllTopics()
-                .keySet()
-                .stream()
-                .sorted()
-                .toList();
-
-        // TODO: implement this
-        return Optional.empty();
+    public KafkaClusterStatistics getForKafkaCluster() {
+        // TODO: also fetch topic and partition-related statistics to provide more meaningful data
+        return new KafkaClusterStatistics(kafkaAdminService.getNodesInCluster());
     }
 
 }

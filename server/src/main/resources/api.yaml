@@ -97,6 +97,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EventStatisticsV1"
+  /api/v1/statistics/kafka/cluster:
+    get:
+      tags:
+        - "statistics"
+      summary: "Fetch statistics about the Kafka cluster"
+      description: "Fetch statistics about the cluster currently connected to Kafkalyze"
+      operationId: "fetchClusterStatistics"
+      responses:
+        "200":
+          description: "Cluster statistics were fetched successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KafkaClusterStatistics"
 components:
   schemas:
     TopicInformationV1:
@@ -138,3 +152,27 @@ components:
         databaseSizeInBytes:
           type: integer
           example: 1500000000
+    KafkaClusterStatistics:
+      type: object
+      description: "Kafka cluster statistics"
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              hostname:
+                type: string
+                example: "localhost"
+              port:
+                type: integer
+                example: 9093
+              rack:
+                type: string
+                example: "rack-identifier"
+              isClusterController:
+                type: boolean
+                example: true

@@ -3,7 +3,7 @@ import { AreaChart } from "../components/visualisation/AreaChart";
 import { DoughnutChart } from "../components/visualisation/DoughnutChart";
 import { SingleValueStatisticCard } from "../components/visualisation/SingleValueStatisticCard";
 import { getAllTopics } from "../services/TopicsService";
-import { getEventStoreCollectionStatistics } from "../services/StatisticsService";
+import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
 import { useInterval } from "../hooks/useInterval";
 
 const KILOBYTE = 2 ** 10;
@@ -15,6 +15,7 @@ export const OverviewPage = () => {
     const [totalEventCount, setTotalEventCount] = useState(null);
     const [databaseSize, setDatabaseSize] = useState({ value: null, unit: null });
     const [topics, setTopics] = useState(null);
+    const [clusterStatistics, setClusterStatistics] = useState(null);
 
     useInterval(() => fetchStatistics(), 10_000);
 
@@ -25,12 +26,14 @@ export const OverviewPage = () => {
             () => setTopics(undefined));
 
         getEventStoreCollectionStatistics(
-            statistics => {
-                console.log(statistics);
-                setDatabaseSize(convertSize(statistics.databaseSizeInBytes));
-            },
+            statistics => setDatabaseSize(convertSize(statistics.databaseSizeInBytes)),
             () => setDatabaseSize({ value: undefined, unit: undefined }),
             () => setDatabaseSize({ value: undefined, unit: undefined }));
+
+        getKafkaClusterStatistics(
+            statistics => setClusterStatistics(statistics),
+            () => setClusterStatistics(undefined),
+            () => setClusterStatistics(undefined));
     };
 
     const convertSize = sizeInBytes => {
@@ -102,6 +105,33 @@ export const OverviewPage = () => {
                 <div className="column is-one-third">
                     <DoughnutChart />
                 </div>
+            </div>
+
+            <div className="box">
+                <h2 className="subtitle">Nodes connected to the Kafka cluster</h2>
+
+                <table className="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Node id</th>
+                            <th>Hostname</th>
+                            <th>Port</th>
+                            <th>Rack id</th>
+                            <th>Is cluster controller?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clusterStatistics?.nodes.map((node, index) => (
+                            <tr>
+                                <td>{node.id}</td>
+                                <td>{node.hostname}</td>
+                                <td>{node.port}</td>
+                                <td>{node.rack ?? "unknown"}</td>
+                                <td>{node.isClusterController ? "yes" : "no"}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
