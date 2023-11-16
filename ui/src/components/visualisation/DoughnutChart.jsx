@@ -30,9 +30,10 @@ const data = {
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-export const DoughnutChart = () => {
+export const DoughnutChart = ({ title, wrapperClassName }) => {
     return (
-        <div className="box">
+        <div className={`box ${wrapperClassName}`}>
+            {title && <h2 className="subtitle">{title}</h2>}
             <Doughnut data={data} />
         </div>
     );

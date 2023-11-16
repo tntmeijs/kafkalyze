@@ -65,9 +65,10 @@ const options = {
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
 
-export const AreaChart = () => {
+export const LineChart = ({ title, wrapperClassName }) => {
     return (
-        <div className="box">
+        <div className={`box ${wrapperClassName}`}>
+            {title && <h2 className="subtitle">{title}</h2>}
             <Line data={data} options={options} />
         </div>
     );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AreaChart } from "../components/visualisation/AreaChart";
+import { LineChart } from "../components/visualisation/LineChart";
 import { DoughnutChart } from "../components/visualisation/DoughnutChart";
 import { SingleValueStatisticCard } from "../components/visualisation/SingleValueStatisticCard";
 import { getAllTopics } from "../services/TopicsService";
@@ -99,11 +99,11 @@ export const OverviewPage = () => {
             </div>
 
             <div className="columns">
-                <div className="column">
-                    <AreaChart />
+                <div className="column is-two-thirds is-flex is-flex-direction-column">
+                    <LineChart title="Event consumption" wrapperClassName="is-flex-grow-1" />
                 </div>
-                <div className="column is-one-third">
-                    <DoughnutChart />
+                <div className="column is-one-third is-flex is-flex-direction-column">
+                    <DoughnutChart title="Event distribution" wrapperClassName="is-flex-grow-1" />
                 </div>
             </div>
 
