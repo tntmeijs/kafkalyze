@@ -28,10 +28,12 @@ public class StatisticsController implements StatisticsApi {
      */
     @Override
     public ResponseEntity<EventStatisticsV1> fetchEventStatistics() {
-        final var statistics = statisticsService.getForCollection("event-store");
+        final var eventStoreCollectionStatistics = statisticsService.getForCollection("event-store");
+        final var eventDistributionPerTopic = statisticsService.getEventDistributionPerTopic();
 
         final var body = new EventStatisticsV1();
-        body.setDatabaseSizeInBytes(statistics.uncompressedStorageSize());
+        body.setDatabaseSizeInBytes(eventStoreCollectionStatistics.uncompressedStorageSize());
+        body.setEventDistributionPerTopic(eventDistributionPerTopic);
 
         return ResponseEntity.ok(body);
     }

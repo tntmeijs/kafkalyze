@@ -1,40 +1,47 @@
 import { ArcElement, Chart, Legend, Tooltip } from "chart.js";
+import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
-const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [
-        {
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
-        },
-    ]
+const options = {
+    responsive: true,
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
 };
+
+const colours = [
+    [46, 204, 113],
+    [52, 152, 219],
+    [155, 89, 182],
+    [52, 73, 94],
+    [241, 196, 15],
+    [230, 126, 34],
+    [231, 76, 60],
+    [149, 165, 166]
+];
+
+const tripletToRGBA = (triplet, alpha) => `rgba(${triplet[0]}, ${triplet[1]}, ${triplet[2]}, ${alpha})`;
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-export const DoughnutChart = ({ title, wrapperClassName }) => {
+export const DoughnutChart = ({ className, labels, datapoints, hoverText }) => {
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: hoverText,
+                data: datapoints,
+                backgroundColor: datapoints.map((_, index) => tripletToRGBA(colours[index % colours.length], 0.2)),
+                borderColor: datapoints.map((_, index) => tripletToRGBA(colours[index % colours.length], 1.0))
+            }
+        ]
+    };
+
     return (
-        <div className={`box ${wrapperClassName}`}>
-            {title && <h2 className="subtitle">{title}</h2>}
-            <Doughnut data={data} />
+        <div className={className}>
+            <Doughnut data={data} options={options} />
         </div>
     );
 };

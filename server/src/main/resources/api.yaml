@@ -152,6 +152,11 @@ components:
         databaseSizeInBytes:
           type: integer
           example: 1500000000
+        eventDistributionPerTopic:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
     KafkaClusterStatistics:
       type: object
       description: "Kafka cluster statistics"

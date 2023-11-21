@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { LineChart } from "../components/visualisation/LineChart";
-import { DoughnutChart } from "../components/visualisation/DoughnutChart";
 import { SingleValueStatisticCard } from "../components/visualisation/SingleValueStatisticCard";
 import { getAllTopics } from "../services/TopicsService";
 import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
 import { useInterval } from "../hooks/useInterval";
+import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
 
 const KILOBYTE = 2 ** 10;
 const MEGABYTE = 2 ** 20;
@@ -14,6 +14,7 @@ export const OverviewPage = () => {
     const [eventsPerHourCount, setEventsPerHourCount] = useState(null);
     const [totalEventCount, setTotalEventCount] = useState(null);
     const [databaseSize, setDatabaseSize] = useState({ value: null, unit: null });
+    const [eventDistributionPerTopic, setEventDistributionPerTopic] = useState(null);
     const [topics, setTopics] = useState(null);
     const [clusterStatistics, setClusterStatistics] = useState(null);
 
@@ -26,7 +27,10 @@ export const OverviewPage = () => {
             () => setTopics(undefined));
 
         getEventStoreCollectionStatistics(
-            statistics => setDatabaseSize(convertSize(statistics.databaseSizeInBytes)),
+            statistics => {
+                setDatabaseSize(convertSize(statistics.databaseSizeInBytes));
+                setEventDistributionPerTopic(statistics.eventDistributionPerTopic);
+            },
             () => setDatabaseSize({ value: undefined, unit: undefined }),
             () => setDatabaseSize({ value: undefined, unit: undefined }));
 
@@ -80,7 +84,7 @@ export const OverviewPage = () => {
                 <div className="column is-flex is-flex-direction-column">
                     <SingleValueStatisticCard
                         title="database size"
-                        value={databaseSize.value}
+                        value={ databaseSize.value?.toFixed(2)}
                         loading={databaseSize.value === null}
                         failure={databaseSize.value === undefined}
                         unit={databaseSize.unit}
@@ -103,35 +107,41 @@ export const OverviewPage = () => {
                     <LineChart title="Event consumption" wrapperClassName="is-flex-grow-1" />
                 </div>
                 <div className="column is-one-third is-flex is-flex-direction-column">
-                    <DoughnutChart title="Event distribution" wrapperClassName="is-flex-grow-1" />
+                    <EventDistributionChart eventDistributionPerTopic={eventDistributionPerTopic} wrapperClassName="is-flex-grow-1" />
                 </div>
             </div>
 
             <div className="box">
                 <h2 className="subtitle">Nodes connected to the Kafka cluster</h2>
 
-                <table className="table is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>Node id</th>
-                            <th>Hostname</th>
-                            <th>Port</th>
-                            <th>Rack id</th>
-                            <th>Is cluster controller?</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {clusterStatistics?.nodes.map((node, index) => (
-                            <tr key={index}>
-                                <td>{node.id}</td>
-                                <td>{node.hostname}</td>
-                                <td>{node.port}</td>
-                                <td>{node.rack ?? "unknown"}</td>
-                                <td>{node.isClusterController ? "yes" : "no"}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                {!!clusterStatistics
+                    ? (
+                        <table className="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>Node id</th>
+                                    <th>Hostname</th>
+                                    <th>Port</th>
+                                    <th>Rack id</th>
+                                    <th>Is cluster controller?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {clusterStatistics.nodes.map((node, index) => (
+                                    <tr key={index}>
+                                        <td>{node.id}</td>
+                                        <td>{node.hostname}</td>
+                                        <td>{node.port}</td>
+                                        <td>{node.rack ?? "unknown"}</td>
+                                        <td>{node.isClusterController ? "yes" : "no"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )
+                    : <progress className="progress is-small is-info"></progress>
+                }
             </div>
         </div>
     );
