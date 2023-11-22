@@ -5,6 +5,7 @@ import { getAllTopics } from "../services/TopicsService";
 import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
 import { useInterval } from "../hooks/useInterval";
 import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
+import { EventConsumptionChart } from "../components/tools/overview/EventConsumptionChart";
 
 // Kilobytes (and similar units) are more intuitive for users, note that this CANNOT be used if you NEED Kibibytes (KiB) or a greater unit
 const KILOBYTE = 10 ** 3;
@@ -110,7 +111,7 @@ export const OverviewPage = () => {
 
             <div className="columns">
                 <div className="column is-two-thirds is-flex is-flex-direction-column">
-                    <LineChart title="Event consumption" wrapperClassName="is-flex-grow-1" />
+                    <EventConsumptionChart intervalMs={30_000} wrapperClassName="is-flex-grow-1" />
                 </div>
                 <div className="column is-one-third is-flex is-flex-direction-column">
                     <EventDistributionChart intervalMs={5_000} wrapperClassName="is-flex-grow-1" />

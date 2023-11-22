@@ -1,5 +1,4 @@
 import { ArcElement, Chart, Legend, Tooltip } from "chart.js";
-import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
 const options = {
@@ -33,7 +32,7 @@ export const DoughnutChart = ({ className, labels, datapoints, hoverText }) => {
             {
                 label: hoverText,
                 data: datapoints,
-                backgroundColor: datapoints.map((_, index) => tripletToRGBA(colours[index % colours.length], 0.2)),
+                backgroundColor: datapoints.map((_, index) => tripletToRGBA(colours[index % colours.length], 0.5)),
                 borderColor: datapoints.map((_, index) => tripletToRGBA(colours[index % colours.length], 1.0))
             }
         ]
