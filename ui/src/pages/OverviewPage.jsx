@@ -6,9 +6,10 @@ import { getEventDistributionStatistics, getEventStoreCollectionStatistics, getK
 import { useInterval } from "../hooks/useInterval";
 import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
 
-const KILOBYTE = 2 ** 10;
-const MEGABYTE = 2 ** 20;
-const GIGABYTE = 2 ** 30;
+// Kilobytes (and similar units) are more intuitive for users, note that this CANNOT be used if you NEED Kibibytes (KiB) or a greater unit
+const KILOBYTE = 10**3;
+const MEGABYTE = 10**6;
+const GIGABYTE = 10**9;
 
 export const OverviewPage = () => {
     const [eventsPerHourCount, setEventsPerHourCount] = useState(null);
@@ -27,9 +28,18 @@ export const OverviewPage = () => {
             () => setTopics(undefined));
 
         getEventStoreCollectionStatistics(
-            statistics => setDatabaseSize(convertSize(statistics.databaseSizeInBytes)),
-            () => setDatabaseSize({ value: undefined, unit: undefined }),
-            () => setDatabaseSize({ value: undefined, unit: undefined }));
+            statistics => {
+                setDatabaseSize(convertSize(statistics.databaseSizeInBytes));
+                setTotalEventCount(statistics.eventCount)
+            },
+            () => {
+                setDatabaseSize({ value: undefined, unit: undefined });
+                setTotalEventCount(undefined);
+            },
+            () => {
+                setDatabaseSize({ value: undefined, unit: undefined });
+                setTotalEventCount(undefined);
+            });
 
         getKafkaClusterStatistics(
             statistics => setClusterStatistics(statistics),
@@ -47,7 +57,7 @@ export const OverviewPage = () => {
 
         if (sizeInBytes >= KILOBYTE) {
             result.value = sizeInBytes / KILOBYTE;
-            result.unit = "KB";
+            result.unit = "kB";
         } else if (sizeInBytes >= MEGABYTE) {
             result.value = sizeInBytes / MEGABYTE;
             result.unit = "MB";

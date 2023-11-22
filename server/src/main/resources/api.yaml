@@ -179,7 +179,12 @@ components:
       properties:
         databaseSizeInBytes:
           type: integer
+          format: int64
           example: 1500000000
+        eventCount:
+          type: integer
+          format: int64
+          example: 5500
     EventDistributionStatisticsV1:
       type: object
       description: "Statistics about consumed events' distribution over topics"

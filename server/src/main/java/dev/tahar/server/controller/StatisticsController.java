@@ -60,6 +60,7 @@ public class StatisticsController implements StatisticsApi {
 
         final var body = new EventStorageStatisticsV1();
         body.setDatabaseSizeInBytes(eventStoreCollectionStatistics.uncompressedStorageSize());
+        body.setEventCount(eventStoreCollectionStatistics.documentCount());
 
         return ResponseEntity.ok(body);
     }

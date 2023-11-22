@@ -32,12 +32,11 @@ public class StatisticsService {
         final var result = mongoTemplate.getDb().runCommand(new Document("collStats", collectionName));
 
         return new CollectionStatistics(
-                result.getInteger("avgObjSize"),
-                result.getInteger("count"),
-                result.getInteger("nindexes"),
-                result.getInteger("allocatedStorageSize"),
-                result.getInteger("totalIndexSize"),
-                result.getInteger("size"));
+                Long.valueOf(result.getInteger("avgObjSize")),
+                Long.valueOf(result.getInteger("count")),
+                Long.valueOf(result.getInteger("nindexes")),
+                Long.valueOf(result.getInteger("totalIndexSize")),
+                Long.valueOf(result.getInteger("size")));
     }
 
     public KafkaClusterStatistics getForKafkaCluster() {
