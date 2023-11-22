@@ -4,7 +4,9 @@ import dev.tahar.server.mapping.StatisticsMapper;
 import dev.tahar.server.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.StatisticsApi;
-import org.openapitools.model.EventStatisticsV1;
+import org.openapitools.model.EventConsumptionStatisticsV1;
+import org.openapitools.model.EventDistributionStatisticsV1;
+import org.openapitools.model.EventStorageStatisticsV1;
 import org.openapitools.model.KafkaClusterStatistics;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,13 +29,37 @@ public class StatisticsController implements StatisticsApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<EventStatisticsV1> fetchEventStatistics() {
-        final var eventStoreCollectionStatistics = statisticsService.getForCollection("event-store");
+    public ResponseEntity<EventConsumptionStatisticsV1> fetchEventConsumptionStatistics() {
+        final var eventConsumptionPerTimeframe = statisticsService.getEventConsumptionPerTimeframe();
+
+        final var body = new EventConsumptionStatisticsV1();
+        body.setEventConsumedTimeframe(eventConsumptionPerTimeframe);
+
+        return ResponseEntity.ok(body);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<EventDistributionStatisticsV1> fetchEventDistributionStatistics() {
         final var eventDistributionPerTopic = statisticsService.getEventDistributionPerTopic();
 
-        final var body = new EventStatisticsV1();
-        body.setDatabaseSizeInBytes(eventStoreCollectionStatistics.uncompressedStorageSize());
+        final var body = new EventDistributionStatisticsV1();
         body.setEventDistributionPerTopic(eventDistributionPerTopic);
+
+        return ResponseEntity.ok(body);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<EventStorageStatisticsV1> fetchEventStorageStatistics() {
+        final var eventStoreCollectionStatistics = statisticsService.getForCollection("event-store");
+
+        final var body = new EventStorageStatisticsV1();
+        body.setDatabaseSizeInBytes(eventStoreCollectionStatistics.uncompressedStorageSize());
 
         return ResponseEntity.ok(body);
     }

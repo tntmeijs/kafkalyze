@@ -26,12 +26,16 @@ export const EventDistributionChart = ({ wrapperClassName, eventDistributionPerT
                 </div>
             )}
 
-            {eventDistributionPerTopic && (
-                <DoughnutChart
-                    hoverText="total events"
-                    labels={Object.entries(eventDistributionPerTopic).map(entry => entry[0])}
-                    datapoints={Object.entries(eventDistributionPerTopic).map(entry => entry[1])} />
-            )}
+            {!!eventDistributionPerTopic
+                ? (
+                    <DoughnutChart
+                        hoverText="total events"
+                        labels={Object.entries(eventDistributionPerTopic).map(entry => entry[0])}
+                        datapoints={Object.entries(eventDistributionPerTopic).map(entry => entry[1])} />
+                )
+                : (
+                    <progress className="progress is-small is-info"></progress>
+                )}
         </div>
     );
 };

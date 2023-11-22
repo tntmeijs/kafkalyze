@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LineChart } from "../components/visualisation/LineChart";
 import { SingleValueStatisticCard } from "../components/visualisation/SingleValueStatisticCard";
 import { getAllTopics } from "../services/TopicsService";
-import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
+import { getEventDistributionStatistics, getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
 import { useInterval } from "../hooks/useInterval";
 import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
 
@@ -27,10 +27,7 @@ export const OverviewPage = () => {
             () => setTopics(undefined));
 
         getEventStoreCollectionStatistics(
-            statistics => {
-                setDatabaseSize(convertSize(statistics.databaseSizeInBytes));
-                setEventDistributionPerTopic(statistics.eventDistributionPerTopic);
-            },
+            statistics => setDatabaseSize(convertSize(statistics.databaseSizeInBytes)),
             () => setDatabaseSize({ value: undefined, unit: undefined }),
             () => setDatabaseSize({ value: undefined, unit: undefined }));
 
@@ -38,6 +35,11 @@ export const OverviewPage = () => {
             statistics => setClusterStatistics(statistics),
             () => setClusterStatistics(undefined),
             () => setClusterStatistics(undefined));
+
+        getEventDistributionStatistics(
+            statistics => setEventDistributionPerTopic(statistics.eventDistributionPerTopic),
+            () => setEventDistributionPerTopic(undefined),
+            () => setEventDistributionPerTopic(undefined));
     };
 
     const convertSize = sizeInBytes => {
@@ -84,7 +86,7 @@ export const OverviewPage = () => {
                 <div className="column is-flex is-flex-direction-column">
                     <SingleValueStatisticCard
                         title="database size"
-                        value={ databaseSize.value?.toFixed(2)}
+                        value={databaseSize.value?.toFixed(2)}
                         loading={databaseSize.value === null}
                         failure={databaseSize.value === undefined}
                         unit={databaseSize.unit}

@@ -53,4 +53,12 @@ public class StatisticsService {
                 .collect(Collectors.toMap(EventStoreRepository.EventsPerTopicCount::topic, EventStoreRepository.EventsPerTopicCount::count));
     }
 
+    public Map<String, Long> getEventConsumptionPerTimeframe() {
+        return eventStoreRepository
+                .aggregateEventConsumedCountPerMinute()
+                .getMappedResults()
+                .stream()
+                .collect(Collectors.toMap(EventStoreRepository.EventCountPerTimeUnit::date, EventStoreRepository.EventCountPerTimeUnit::count));
+    }
+
 }

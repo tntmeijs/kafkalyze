@@ -83,20 +83,48 @@ paths:
       responses:
         "200":
           description: "Event was produced"
-  /api/v1/statistics/kafka/events:
+  /api/v1/statistics/kafka/events/storage:
     get:
       tags:
         - "statistics"
-      summary: "Fetch statistics about Kafka events"
-      description: "Fetch statistics about Kafka events such as how many events are stored, events consumed per hour, and more"
-      operationId: "fetchEventStatistics"
+      summary: "Fetch statistics about how much storage Kafka events take up in Kafkalyze"
+      description: "Fetch statistics about Kafka events such as how many events are stored"
+      operationId: "fetchEventStorageStatistics"
       responses:
         "200":
           description: "Statistics were fetched successfully"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EventStatisticsV1"
+                $ref: "#/components/schemas/EventStorageStatisticsV1"
+  /api/v1/statistics/kafka/events/distribution:
+    get:
+      tags:
+        - "statistics"
+      summary: "Fetch statistics about how Kafka events are distributed over topics"
+      description: "Fetch statistics about the number of events consumed per topic within a given timeframe"
+      operationId: "fetchEventDistributionStatistics"
+      responses:
+        "200":
+          description: "Statistics were fetched successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDistributionStatisticsV1"
+  /api/v1/statistics/kafka/events/consumed:
+    get:
+      tags:
+        - "statistics"
+      summary: "Fetch statistics about Kafka events consumed"
+      description: "Fetch statistics about the number of events consumed within a given timeframe"
+      operationId: "fetchEventConsumptionStatistics"
+      responses:
+        "200":
+          description: "Statistics were fetched successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventConsumptionStatisticsV1"
   /api/v1/statistics/kafka/cluster:
     get:
       tags:
@@ -145,14 +173,27 @@ components:
         topic:
           type: string
           example: "dev.tahar.topic.sample.a"
-    EventStatisticsV1:
+    EventStorageStatisticsV1:
       type: object
-      description: "Statistics about consumed events"
+      description: "Statistics about consumed events' storage"
       properties:
         databaseSizeInBytes:
           type: integer
           example: 1500000000
+    EventDistributionStatisticsV1:
+      type: object
+      description: "Statistics about consumed events' distribution over topics"
+      properties:
         eventDistributionPerTopic:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+    EventConsumptionStatisticsV1:
+      type: object
+      description: "Statistics about event consumption"
+      properties:
+        eventConsumedTimeframe:
           type: object
           additionalProperties:
             type: integer

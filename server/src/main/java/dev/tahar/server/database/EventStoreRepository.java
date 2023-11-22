@@ -28,7 +28,80 @@ public interface EventStoreRepository extends MongoRepository<EventDocument, Str
     })
     AggregationResults<EventsPerTopicCount> aggregateEventsByTopic();
 
-    record EventsPerTopicCount(String topic, Long count) {
+    @Aggregation(pipeline = {
+            """
+                    {
+                        $project: {
+                          year: { $year: { $toDate: "$timestamp" } },
+                          month: {
+                            $month: { $toDate: "$timestamp" },
+                          },
+                          day: {
+                            $dayOfMonth: { $toDate: "$timestamp" },
+                          },
+                          hour: { $hour: { $toDate: "$timestamp" } },
+                          minute: {
+                            $minute: { $toDate: "$timestamp" },
+                          },
+                        },
+                      }
+                    """,
+            """
+                    {
+                        $group: {
+                          _id: {
+                            year: "$year",
+                            month: "$month",
+                            day: "$day",
+                            hour: "$hour",
+                            minute: "$minute",
+                          },
+                          count: { $sum: 1 },
+                        },
+                      }
+                    """,
+            """
+                    {
+                        $project: {
+                          _id: 0,
+                          date: {
+                            $dateToString: {
+                              format: "%Y-%m-%d %H:%M",
+                              date: {
+                                $toDate: {
+                                  $concat: [
+                                    { $toString: "$_id.year" },
+                                    "-",
+                                    { $toString: "$_id.month" },
+                                    "-",
+                                    { $toString: "$_id.day" },
+                                    " ",
+                                    { $toString: "$_id.hour" },
+                                    ":",
+                                    { $toString: "$_id.minute" },
+                                  ],
+                                },
+                              },
+                            },
+                          },
+                          count: 1,
+                        },
+                      }
+                    """,
+            """
+                    {
+                        $sort: {
+                          date: 1,
+                        },
+                      }
+                    """
+    })
+    AggregationResults<EventCountPerTimeUnit> aggregateEventConsumedCountPerMinute();
+
+    record EventsPerTopicCount(String topic, long count) {
+    }
+
+    record EventCountPerTimeUnit(String date, long count) {
     }
 
 }
