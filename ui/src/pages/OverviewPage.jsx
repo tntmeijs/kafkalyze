@@ -2,20 +2,19 @@ import { useState } from "react";
 import { LineChart } from "../components/visualisation/LineChart";
 import { SingleValueStatisticCard } from "../components/visualisation/SingleValueStatisticCard";
 import { getAllTopics } from "../services/TopicsService";
-import { getEventDistributionStatistics, getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
+import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "../services/StatisticsService";
 import { useInterval } from "../hooks/useInterval";
 import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
 
 // Kilobytes (and similar units) are more intuitive for users, note that this CANNOT be used if you NEED Kibibytes (KiB) or a greater unit
-const KILOBYTE = 10**3;
-const MEGABYTE = 10**6;
-const GIGABYTE = 10**9;
+const KILOBYTE = 10 ** 3;
+const MEGABYTE = 10 ** 6;
+const GIGABYTE = 10 ** 9;
 
 export const OverviewPage = () => {
     const [eventsPerHourCount, setEventsPerHourCount] = useState(null);
     const [totalEventCount, setTotalEventCount] = useState(null);
     const [databaseSize, setDatabaseSize] = useState({ value: null, unit: null });
-    const [eventDistributionPerTopic, setEventDistributionPerTopic] = useState(null);
     const [topics, setTopics] = useState(null);
     const [clusterStatistics, setClusterStatistics] = useState(null);
 
@@ -45,11 +44,6 @@ export const OverviewPage = () => {
             statistics => setClusterStatistics(statistics),
             () => setClusterStatistics(undefined),
             () => setClusterStatistics(undefined));
-
-        getEventDistributionStatistics(
-            statistics => setEventDistributionPerTopic(statistics.eventDistributionPerTopic),
-            () => setEventDistributionPerTopic(undefined),
-            () => setEventDistributionPerTopic(undefined));
     };
 
     const convertSize = sizeInBytes => {
@@ -119,7 +113,7 @@ export const OverviewPage = () => {
                     <LineChart title="Event consumption" wrapperClassName="is-flex-grow-1" />
                 </div>
                 <div className="column is-one-third is-flex is-flex-direction-column">
-                    <EventDistributionChart eventDistributionPerTopic={eventDistributionPerTopic} wrapperClassName="is-flex-grow-1" />
+                    <EventDistributionChart intervalMs={5_000} wrapperClassName="is-flex-grow-1" />
                 </div>
             </div>
 

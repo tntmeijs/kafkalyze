@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { DoughnutChart } from "../../visualisation/DoughnutChart";
+import { useInterval } from "../../../hooks/useInterval";
+import { getEventDistributionStatistics } from "../../../services/StatisticsService";
 
 const TIME_PERIODS = ["custom", "1h", "30m", "5m"];
 const CUSTOM_PERIOD_INDEX = TIME_PERIODS.indexOf("custom");
 
-export const EventDistributionChart = ({ wrapperClassName, eventDistributionPerTopic }) => {
+export const EventDistributionChart = ({ wrapperClassName, intervalMs }) => {
     const [timePeriodIndex, setTimePeriodIndex] = useState(TIME_PERIODS.length - 1);
+    const [distribution, setDistribution] = useState(null);
+
+    useInterval(() => getEventDistributionStatistics(
+        statistics => setDistribution(statistics.eventDistributionPerTopic),
+        () => setDistribution(undefined),
+        () => setDistribution(undefined)), intervalMs);
 
     return (
         <div className={`box ${wrapperClassName}`}>
@@ -26,12 +34,12 @@ export const EventDistributionChart = ({ wrapperClassName, eventDistributionPerT
                 </div>
             )}
 
-            {!!eventDistributionPerTopic
+            {!!distribution
                 ? (
                     <DoughnutChart
                         hoverText="total events"
-                        labels={Object.entries(eventDistributionPerTopic).map(entry => entry[0])}
-                        datapoints={Object.entries(eventDistributionPerTopic).map(entry => entry[1])} />
+                        labels={Object.entries(distribution).map(entry => entry[0])}
+                        datapoints={Object.entries(distribution).map(entry => entry[1])} />
                 )
                 : (
                     <progress className="progress is-small is-info"></progress>

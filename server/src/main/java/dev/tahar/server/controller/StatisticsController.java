@@ -33,7 +33,7 @@ public class StatisticsController implements StatisticsApi {
         final var eventConsumptionPerTimeframe = statisticsService.getEventConsumptionPerTimeframe();
 
         final var body = new EventConsumptionStatisticsV1();
-        body.setEventConsumedTimeframe(eventConsumptionPerTimeframe);
+        body.setEventConsumedAtTimeframe(eventConsumptionPerTimeframe);
 
         return ResponseEntity.ok(body);
     }

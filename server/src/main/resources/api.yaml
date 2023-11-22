@@ -198,7 +198,7 @@ components:
       type: object
       description: "Statistics about event consumption"
       properties:
-        eventConsumedTimeframe:
+        eventConsumedAtTimeframe:
           type: object
           additionalProperties:
             type: integer
