@@ -10,10 +10,10 @@ export const Navbar = () => {
     useEffect(() => setIsCollapsed(true), [location]);
 
     return (
-        <nav className="navbar">
+        <nav className="navbar mb-4 mt-2">
             <div className="navbar-brand">
                 <Link to="/" className="navbar-item">
-                    <img src={logo} width="112" height="28" />
+                    <img src={logo} />
                 </Link>
 
                 <a className={`navbar-burger ${isCollapsed ? "" : "is-active"}`} onClick={() => setIsCollapsed(!isCollapsed)}>
