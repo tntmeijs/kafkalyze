@@ -14,6 +14,9 @@ Kafkalyze levels up a developer's productivity by providing them with advanced i
 We're not just talking about infrastructure-related statistics, we're talking about the data *you* as a developer need to do what you do best: create amazing applications! Think of raw events, topic consumers, and much more!
 
 ## Showcase
+### Dashboard with statistics
+![dashboard statistics](./media/dashboard_statistics.png)
+
 ### List all topics on a Kafka broker
 ![list topics](./media/list_topics.png)
 
