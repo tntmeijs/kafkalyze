@@ -6,14 +6,17 @@ import { getEventStoreCollectionStatistics, getKafkaClusterStatistics } from "..
 import { useInterval } from "../hooks/useInterval";
 import { EventDistributionChart } from "../components/tools/overview/EventDistributionChart";
 import { EventConsumptionChart } from "../components/tools/overview/EventConsumptionChart";
+import { getAllConsumerGroups } from "../services/ConsumersService";
 
 // Kilobytes (and similar units) are more intuitive for users, note that this CANNOT be used if you NEED Kibibytes (KiB) or a greater unit
 const KILOBYTE = 10 ** 3;
 const MEGABYTE = 10 ** 6;
 const GIGABYTE = 10 ** 9;
 
+const STABLE_KAFKA_CONSUMER_STATUS = "STABLE";
+
 export const OverviewPage = () => {
-    const [eventsPerHourCount, setEventsPerHourCount] = useState(null);
+    const [consumerGroupCount, setConsumerGroupCount] = useState(null);
     const [totalEventCount, setTotalEventCount] = useState(null);
     const [databaseSize, setDatabaseSize] = useState({ value: null, unit: null });
     const [topics, setTopics] = useState(null);
@@ -45,6 +48,12 @@ export const OverviewPage = () => {
             statistics => setClusterStatistics(statistics),
             () => setClusterStatistics(undefined),
             () => setClusterStatistics(undefined));
+
+        getAllConsumerGroups(
+            STABLE_KAFKA_CONSUMER_STATUS,
+            consumerGroups => setConsumerGroupCount(consumerGroups.length),
+            () => setConsumerGroupCount(undefined),
+            () => setConsumerGroupCount(undefined));
     };
 
     const convertSize = sizeInBytes => {
@@ -72,10 +81,10 @@ export const OverviewPage = () => {
             <div className="columns">
                 <div className="column is-flex is-flex-direction-column">
                     <SingleValueStatisticCard
-                        title="events per hour"
-                        value={eventsPerHourCount}
-                        loading={eventsPerHourCount === null}
-                        failure={eventsPerHourCount === undefined}
+                        title="stable consumer groups"
+                        value={consumerGroupCount}
+                        loading={consumerGroupCount === null}
+                        failure={consumerGroupCount === undefined}
                         colour="is-info"
                         wrapperClassName="is-flex-grow-1" />
                 </div>

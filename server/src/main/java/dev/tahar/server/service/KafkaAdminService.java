@@ -1,7 +1,10 @@
 package dev.tahar.server.service;
 
+import dev.tahar.server.mapping.ConsumersMapper;
 import dev.tahar.server.model.ClusterNodeInformation;
+import dev.tahar.server.model.ConsumerGroupState;
 import dev.tahar.server.model.CreateTopicInfo;
+import dev.tahar.server.model.KafkaConsumerGroupInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -179,6 +182,35 @@ public class KafkaAdminService {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             log.error("Execution exception occurred while deleting topics:", e);
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**
+     * Fetch all <i>valid</i> consumer groups in the cluster
+     *
+     * @return All valid consumer groups
+     */
+    public List<KafkaConsumerGroupInfo> listConsumerGroups() {
+        try {
+            return admin
+                    .listConsumerGroups()
+                    .valid()
+                    .get()
+                    .stream()
+                    .map(consumerGroupListing -> new KafkaConsumerGroupInfo(
+                            consumerGroupListing.groupId(),
+                            consumerGroupListing
+                                    .state()
+                                    .map(ConsumersMapper.INSTANCE::map)
+                                    .orElse(ConsumerGroupState.UNKNOWN)))
+                    .toList();
+        } catch (ExecutionException e) {
+            log.error("Execution exception occurred while listing consumer groups:", e);
+        } catch (InterruptedException e) {
+            log.error("Interrupted exception occurred while listing consumer groups:", e);
+            Thread.currentThread().interrupt();
         }
 
         return Collections.emptyList();

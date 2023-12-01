@@ -19,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@KafkaListener(topicPattern = ".*", groupId = "${spring.application.name}")
+@KafkaListener(topicPattern = ".*", groupId = "${spring.application.name}_consume_any_event")
 public class Consumer {
 
     private final ObjectMapper objectMapper;

@@ -13,6 +13,8 @@ tags:
     description: "Kafka event operations"
   - name: "topics"
     description: "Kafka topic operations"
+  - name: "consumers"
+    description: "Kafka consumer operations"
   - name: "statistics"
     description: "System statistics for dashboarding purposes"
 paths:
@@ -67,6 +69,31 @@ paths:
           description: "Successfully deleted the topic"
         "400":
           description: "Failed to delete the topic"
+  /api/v1/consumers:
+    get:
+      tags:
+        - "consumers"
+      summary: "Fetch all consumer groups in the cluster"
+      description: "Fetch all consumer groups in the cluster"
+      operationId: "fetchConsumerGroups"
+      parameters:
+        - in: query
+          name: status
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum: ["UNKNOWN", "PREPARING_REBALANCE", "COMPLETING_REBALANCE", "STABLE", "DEAD", "EMPTY"]
+          description: "Only display consumer groups with any of the provided statuses"
+      responses:
+        "200":
+          description: "Consumer groups were fetched successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KafkaConsumerGroups"
   /api/v1/events:
     post:
       tags:
@@ -273,3 +300,15 @@ components:
               isClusterController:
                 type: boolean
                 example: true
+    KafkaConsumerGroups:
+      type: object
+      description: "Kafka consumer groups information"
+      properties:
+        consumerGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              groupId:
+                type: string
+                example: "consumer-group-one"
