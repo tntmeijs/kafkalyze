@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Calls a function every N milliseconds
@@ -6,9 +6,14 @@ import { useEffect } from "react";
  * @param {Number} intervalMs Interval between invocations in milliseconds
  */
 export const useInterval = (callback, intervalMs) => {
+    const savedCallback = useRef();
+
     useEffect(() => {
-        callback();
-        const handle = window.setInterval(callback, intervalMs);
-        return () => window.clearInterval(handle);
-    }, []);
+        savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => savedCallback.current(), intervalMs);
+        return () => clearInterval(intervalId);
+    }, [intervalMs]);
 };
