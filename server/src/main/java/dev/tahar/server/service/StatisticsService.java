@@ -45,9 +45,9 @@ public class StatisticsService {
         return new KafkaClusterStatistics(kafkaAdminService.getNodesInCluster());
     }
 
-    public Map<String, Long> getEventDistributionPerTopic() {
+    public Map<String, Long> getEventDistributionPerTopic(long minTimestampMs, long maxTimestampMs) {
         return eventStoreRepository
-                .aggregateEventCountByTopic()
+                .aggregateEventCountByTopic(minTimestampMs, maxTimestampMs)
                 .getMappedResults()
                 .stream()
                 .collect(Collectors.toMap(EventStoreRepository.EventsPerTopicCount::topic, EventStoreRepository.EventsPerTopicCount::count));

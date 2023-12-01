@@ -9,13 +9,10 @@ import org.openapitools.model.EventConsumptionStatisticsV1;
 import org.openapitools.model.EventDistributionStatisticsV1;
 import org.openapitools.model.EventStorageStatisticsV1;
 import org.openapitools.model.KafkaClusterStatistics;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Objects;
 
 @Slf4j
@@ -62,8 +59,8 @@ public class StatisticsController implements StatisticsApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<EventDistributionStatisticsV1> fetchEventDistributionStatistics() {
-        final var eventDistributionPerTopic = statisticsService.getEventDistributionPerTopic();
+    public ResponseEntity<EventDistributionStatisticsV1> fetchEventDistributionStatistics(Long minTimestampMs, Long maxTimestampMs) {
+        final var eventDistributionPerTopic = statisticsService.getEventDistributionPerTopic(minTimestampMs, maxTimestampMs);
 
         final var body = new EventDistributionStatisticsV1();
         body.setEventDistributionPerTopic(eventDistributionPerTopic);

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 public interface EventStoreRepository extends MongoRepository<EventDocument, String> {
 
     @Aggregation(pipeline = {
+            "{ $match: { timestamp: { $gte: :#{[0]}, $lte: :#{[1]} } } }",
             "{ $group: { _id: \"$topic\", count: { $sum: 1 } } }",
             "{ $project: { _id: 0, topic: \"$_id\", count: \"$count\" } }"
     })
-    AggregationResults<EventsPerTopicCount> aggregateEventCountByTopic();
+    AggregationResults<EventsPerTopicCount> aggregateEventCountByTopic(long minTimestampMs, long maxTimestampMs);
 
     @Aggregation(pipeline = {
             "{ $match: { timestamp: { $gte: :#{[0]}, $lte: :#{[1]} } } }",

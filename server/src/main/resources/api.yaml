@@ -104,6 +104,21 @@ paths:
       summary: "Fetch statistics about how Kafka events are distributed over topics"
       description: "Fetch statistics about the number of events consumed per topic within a given timeframe"
       operationId: "fetchEventDistributionStatistics"
+      parameters:
+        - in: query
+          name: minTimestampMs
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Use this to adjust how old the data can be"
+        - in: query
+          name: maxTimestampMs
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Use this to adjust how recent the data can be"
       responses:
         "200":
           description: "Statistics were fetched successfully"

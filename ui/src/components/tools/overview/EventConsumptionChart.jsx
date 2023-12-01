@@ -6,29 +6,28 @@ import { getEventConsumptionStatistics } from "../../../services/StatisticsServi
 const MAX_NUM_ENTRIES_LINE_CHART = 25;
 
 const TIME_PERIODS = {
-    "1d": 24 * 60 * 60 * 1_000,
-    "1h": 60 * 60 * 1_000,
-    "5m": 5 * 60 * 1_000,
-    "1m": 1 * 60 * 1_000
+    "1 day": 24 * 60 * 60 * 1_000,
+    "1 hour": 60 * 60 * 1_000,
+    "5 minutes": 5 * 60 * 1_000,
+    "1 minute": 1 * 60 * 1_000
 };
 
 export const EventConsumptionChart = ({ wrapperClassName, intervalMs }) => {
-    const [timePeriodInterval, setTimePeriodInterval] = useState("5m");
+    const [timePeriod, setTimePeriod] = useState(Object.entries(TIME_PERIODS)[0][0]);
     const [consumption, setConsumption] = useState(null);
 
-    useEffect(() => queryEventConsumptionStatistics(), [timePeriodInterval]);
+    useEffect(() => queryEventConsumptionStatistics(), [timePeriod]);
     useInterval(() => queryEventConsumptionStatistics(), intervalMs);
 
-    const queryEventConsumptionStatistics = () => {
+    const queryEventConsumptionStatistics = () =>
         getEventConsumptionStatistics(
-            Date.now() - MAX_NUM_ENTRIES_LINE_CHART * TIME_PERIODS[timePeriodInterval],
+            Date.now() - MAX_NUM_ENTRIES_LINE_CHART * TIME_PERIODS[timePeriod],
             Date.now(),
-            TIME_PERIODS[timePeriodInterval],
+            TIME_PERIODS[timePeriod],
             MAX_NUM_ENTRIES_LINE_CHART,
             statistics => setConsumption(statistics.eventsConsumedAtTimeframe),
             () => setConsumption(undefined),
             () => setConsumption(undefined));
-    };
 
     return (
         <div className={`box ${wrapperClassName}`}>
@@ -37,9 +36,8 @@ export const EventConsumptionChart = ({ wrapperClassName, intervalMs }) => {
             <div className="buttons has-addons is-centered">
                 {Object.entries(TIME_PERIODS).map((period, index) => <button
                     key={index}
-                    disabled={period[0] === "custom"}
-                    className={`button is-capitalized ${timePeriodInterval === period[0] ? "is-selected is-info" : ""}`}
-                    onClick={() => setTimePeriodInterval(period[0])}>{period[0]}</button>
+                    className={`button ${timePeriod === period[0] ? "is-selected is-info" : ""}`}
+                    onClick={() => setTimePeriod(period[0])}>{period[0]}</button>
                 )}
             </div>
 

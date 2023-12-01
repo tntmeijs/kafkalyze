@@ -1,38 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DoughnutChart } from "../../visualisation/DoughnutChart";
 import { useInterval } from "../../../hooks/useInterval";
 import { getEventDistributionStatistics } from "../../../services/StatisticsService";
 
-const TIME_PERIODS = ["custom", "1h", "30m", "5m"];
-const CUSTOM_PERIOD_INDEX = TIME_PERIODS.indexOf("custom");
+const TIME_PERIODS = {
+    "1 year": 365 * 24 * 60 * 60 * 1_000,
+    "4 weeks": 4 * 7 * 24 * 60 * 60 * 1_000,
+    "1 week": 7 * 24 * 60 * 60 * 1_000,
+    "1 day": 24 * 60 * 60 * 1_000
+};
 
 export const EventDistributionChart = ({ wrapperClassName, intervalMs }) => {
-    const [timePeriodIndex, setTimePeriodIndex] = useState(TIME_PERIODS.length - 1);
+    const [timePeriod, setTimePeriod] = useState(Object.entries(TIME_PERIODS)[0][0]);
     const [distribution, setDistribution] = useState(null);
 
-    useInterval(() => getEventDistributionStatistics(
-        statistics => setDistribution(statistics.eventDistributionPerTopic),
-        () => setDistribution(undefined),
-        () => setDistribution(undefined)), intervalMs);
+    useEffect(() => queryEventDistributionStatistics(), [timePeriod]);
+    useInterval(() => queryEventDistributionStatistics(), intervalMs);
+
+    const queryEventDistributionStatistics = () =>
+        getEventDistributionStatistics(
+            Date.now() - TIME_PERIODS[timePeriod],
+            Date.now(),
+            statistics => setDistribution(statistics.eventDistributionPerTopic),
+            () => setDistribution(undefined),
+            () => setDistribution(undefined));
 
     return (
         <div className={`box ${wrapperClassName}`}>
             <h2 className="subtitle">Event distribution</h2>
 
             <div className="buttons has-addons is-centered">
-                {TIME_PERIODS.map((period, index) => <button
+                {Object.entries(TIME_PERIODS).map((period, index) => <button
                     key={index}
-                    className={`button is-capitalized ${timePeriodIndex === index ? "is-selected is-info" : ""}`}
-                    onClick={() => setTimePeriodIndex(index)}>{period}</button>
+                    className={`button ${timePeriod === period[0] ? "is-selected is-info" : ""}`}
+                    onClick={() => setTimePeriod(period[0])}>{period[0]}</button>
                 )}
             </div>
-
-            {timePeriodIndex === CUSTOM_PERIOD_INDEX && (
-                <div className="buttons has-addons is-centered">
-                    <input className="button is-capitalized" type="date" />
-                    <input className="button is-capitalized" type="date" />
-                </div>
-            )}
 
             {!!distribution
                 ? (

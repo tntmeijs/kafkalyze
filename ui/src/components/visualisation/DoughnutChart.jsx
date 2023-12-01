@@ -40,7 +40,13 @@ export const DoughnutChart = ({ className, labels, datapoints, hoverText }) => {
 
     return (
         <div className={className}>
-            <Doughnut data={data} options={options} />
+            {datapoints.length > 0
+                ? <Doughnut data={data} options={options} />
+                : (
+                    <div className="is-flex is-justify-content-center">
+                        <h2 className="subtitle">no data available for this time period</h2>
+                    </div>
+                )}
         </div>
     );
 };
