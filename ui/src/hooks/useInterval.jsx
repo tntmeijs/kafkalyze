@@ -13,6 +13,7 @@ export const useInterval = (callback, intervalMs) => {
     }, [callback]);
 
     useEffect(() => {
+        savedCallback.current();
         const intervalId = setInterval(() => savedCallback.current(), intervalMs);
         return () => clearInterval(intervalId);
     }, [intervalMs]);
