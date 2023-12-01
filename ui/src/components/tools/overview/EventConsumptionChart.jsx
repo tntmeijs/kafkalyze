@@ -25,9 +25,21 @@ export const EventConsumptionChart = ({ wrapperClassName, intervalMs }) => {
             Date.now(),
             TIME_PERIODS[timePeriod],
             MAX_NUM_ENTRIES_LINE_CHART,
-            statistics => setConsumption(statistics.eventsConsumedAtTimeframe),
+            statistics => setConsumption(reverseObjectKeysByOrder(statistics.eventsConsumedAtTimeframe)),
             () => setConsumption(undefined),
             () => setConsumption(undefined));
+
+    const reverseObjectKeysByOrder = originalObject => {
+        const keysArray = Object.keys(originalObject);
+        const reversedKeysArray = keysArray.reverse();
+
+        const reversedObject = {};
+        reversedKeysArray.forEach(key => {
+            reversedObject[key] = originalObject[key];
+        });
+
+        return reversedObject;
+    };
 
     return (
         <div className={`box ${wrapperClassName}`}>
