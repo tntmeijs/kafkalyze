@@ -9,99 +9,25 @@ import org.springframework.stereotype.Repository;
 public interface EventStoreRepository extends MongoRepository<EventDocument, String> {
 
     @Aggregation(pipeline = {
-            """
-                    {
-                        $group: {
-                        _id: "$topic", count: { $sum: 1 }
-                        }
-                    }
-                    """,
-            """
-                    {
-                        $project: {
-                            _id: 0,
-                            topic: "$_id",
-                            count: "$count"
-                        }
-                    }
-                    """
+            "{ $group: { _id: \"$topic\", count: { $sum: 1 } } }",
+            "{ $project: { _id: 0, topic: \"$_id\", count: \"$count\" } }"
     })
-    AggregationResults<EventsPerTopicCount> aggregateEventsByTopic();
+    AggregationResults<EventsPerTopicCount> aggregateEventCountByTopic();
 
     @Aggregation(pipeline = {
-            """
-                    {
-                        $project: {
-                          year: { $year: { $toDate: "$timestamp" } },
-                          month: {
-                            $month: { $toDate: "$timestamp" },
-                          },
-                          day: {
-                            $dayOfMonth: { $toDate: "$timestamp" },
-                          },
-                          hour: { $hour: { $toDate: "$timestamp" } },
-                          minute: {
-                            $minute: { $toDate: "$timestamp" },
-                          },
-                        },
-                      }
-                    """,
-            """
-                    {
-                        $group: {
-                          _id: {
-                            year: "$year",
-                            month: "$month",
-                            day: "$day",
-                            hour: "$hour",
-                            minute: "$minute",
-                          },
-                          count: { $sum: 1 },
-                        },
-                      }
-                    """,
-            """
-                    {
-                        $project: {
-                          _id: 0,
-                          date: {
-                            $dateToString: {
-                              format: "%Y-%m-%d %H:%M",
-                              date: {
-                                $toDate: {
-                                  $concat: [
-                                    { $toString: "$_id.year" },
-                                    "-",
-                                    { $toString: "$_id.month" },
-                                    "-",
-                                    { $toString: "$_id.day" },
-                                    " ",
-                                    { $toString: "$_id.hour" },
-                                    ":",
-                                    { $toString: "$_id.minute" },
-                                  ],
-                                },
-                              },
-                            },
-                          },
-                          count: 1,
-                        },
-                      }
-                    """,
-            """
-                    {
-                        $sort: {
-                          date: 1,
-                        },
-                      }
-                    """
+            "{ $match: { timestamp: { $gte: :#{[0]}, $lte: :#{[1]} } } }",
+            "{ $project: { roundedTimestamp: { $subtract: [\"$timestamp\", { $mod: [\"$timestamp\", :#{[2]}] } ] } } }",
+            "{ $group: { _id: \"$roundedTimestamp\", count: { $sum: 1 } } }",
+            "{ $limit: :#{[3]} }",
+            "{ $project: { _id: 0, timestamp: \"$_id\", count: 1 } }",
+            "{ $sort: { timestamp: 1 } }"
     })
-    AggregationResults<EventCountPerTimeUnit> aggregateEventConsumedCountPerMinute();
+    AggregationResults<EventCountPerTimeUnit> aggregateEventConsumedCountPerInterval(long minTimestampMs, long maxTimestampMs, long intervalMs, int limit);
 
     record EventsPerTopicCount(String topic, long count) {
     }
 
-    record EventCountPerTimeUnit(String date, long count) {
+    record EventCountPerTimeUnit(long timestamp, long count) {
     }
 
 }

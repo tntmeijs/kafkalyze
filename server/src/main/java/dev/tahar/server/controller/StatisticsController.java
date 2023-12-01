@@ -3,14 +3,22 @@ package dev.tahar.server.controller;
 import dev.tahar.server.mapping.StatisticsMapper;
 import dev.tahar.server.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.StatisticsApi;
 import org.openapitools.model.EventConsumptionStatisticsV1;
 import org.openapitools.model.EventDistributionStatisticsV1;
 import org.openapitools.model.EventStorageStatisticsV1;
 import org.openapitools.model.KafkaClusterStatistics;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Objects;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class StatisticsController implements StatisticsApi {
@@ -29,12 +37,24 @@ public class StatisticsController implements StatisticsApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<EventConsumptionStatisticsV1> fetchEventConsumptionStatistics() {
-        final var eventConsumptionPerTimeframe = statisticsService.getEventConsumptionPerTimeframe();
+    public ResponseEntity<EventConsumptionStatisticsV1> fetchEventConsumptionStatistics(Long minTimestampMs, Long maxTimestampMs, Long intervalMs, Integer limit) {
+        final var eventConsumptionPerTimeframe = statisticsService.getEventConsumptionWithInterval(minTimestampMs, maxTimestampMs, intervalMs, limit);
+
+        // OpenAPI only allows Map<String, T>, which is why timestamps need to be of type String
+        final var dataset = new LinkedHashMap<String, Long>();
+
+        // Generate missing data-point for the requested intervals
+        final var mostRecentTimestampRoundedDown = maxTimestampMs - (maxTimestampMs % intervalMs);
+        for (int i = 0; i < limit; ++i) {
+            final var timestampToInsert = mostRecentTimestampRoundedDown - (i * intervalMs);
+            final var potentialDatapoint = eventConsumptionPerTimeframe.get(timestampToInsert);
+
+            // If there is no data-point for the given timestamp, a default value of zero will be used instead
+            dataset.put(String.valueOf(timestampToInsert), Objects.requireNonNullElse(potentialDatapoint, 0L));
+        }
 
         final var body = new EventConsumptionStatisticsV1();
-        body.setEventsConsumedAtTimeframe(eventConsumptionPerTimeframe);
-
+        body.setEventsConsumedAtTimeframe(dataset);
         return ResponseEntity.ok(body);
     }
 

@@ -8,6 +8,14 @@ const options = {
         legend: {
             display: false
         }
+    },
+    scales: {
+        y: {
+            min: 0,
+            ticks: {
+                stepSize: 1
+            }
+        }
     }
 };
 
@@ -26,8 +34,6 @@ export const LineChart = ({ className, labels, datapoints, hoverText }) => {
             }
         ]
     };
-
-    console.log(labels);
 
     return (
         <div className={className}>

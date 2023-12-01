@@ -68,7 +68,7 @@ export const OverviewPage = () => {
     };
 
     return (
-        <div className="box">
+        <div className="container">
             <div className="columns">
                 <div className="column is-flex is-flex-direction-column">
                     <SingleValueStatisticCard
@@ -111,10 +111,10 @@ export const OverviewPage = () => {
 
             <div className="columns">
                 <div className="column is-two-thirds is-flex is-flex-direction-column">
-                    <EventConsumptionChart intervalMs={30_000} wrapperClassName="is-flex-grow-1" />
+                    <EventConsumptionChart intervalMs={10_000} wrapperClassName="is-flex-grow-1" />
                 </div>
                 <div className="column is-one-third is-flex is-flex-direction-column">
-                    <EventDistributionChart intervalMs={5_000} wrapperClassName="is-flex-grow-1" />
+                    <EventDistributionChart intervalMs={10_000} wrapperClassName="is-flex-grow-1" />
                 </div>
             </div>
 

@@ -118,6 +118,37 @@ paths:
       summary: "Fetch statistics about Kafka events consumed"
       description: "Fetch statistics about the number of events consumed within a given timeframe"
       operationId: "fetchEventConsumptionStatistics"
+      parameters:
+        - in: query
+          name: minTimestampMs
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Use this to adjust how old the data can be"
+        - in: query
+          name: maxTimestampMs
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Use this to adjust how recent the data can be"
+        - in: query
+          name: intervalMs
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+          description: "The granularity of the interval in milliseconds between each datapoint"
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10000
+          description: "The number of desired results"
       responses:
         "200":
           description: "Statistics were fetched successfully"

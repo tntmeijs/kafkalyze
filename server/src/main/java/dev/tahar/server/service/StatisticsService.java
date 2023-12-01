@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -46,18 +47,18 @@ public class StatisticsService {
 
     public Map<String, Long> getEventDistributionPerTopic() {
         return eventStoreRepository
-                .aggregateEventsByTopic()
+                .aggregateEventCountByTopic()
                 .getMappedResults()
                 .stream()
                 .collect(Collectors.toMap(EventStoreRepository.EventsPerTopicCount::topic, EventStoreRepository.EventsPerTopicCount::count));
     }
 
-    public Map<String, Long> getEventConsumptionPerTimeframe() {
+    public Map<Long, Long> getEventConsumptionWithInterval(long minTimestampMs, long maxTimestampMs, long intervalMs, int limit) {
         return eventStoreRepository
-                .aggregateEventConsumedCountPerMinute()
+                .aggregateEventConsumedCountPerInterval(minTimestampMs, maxTimestampMs, intervalMs, limit)
                 .getMappedResults()
                 .stream()
-                .collect(Collectors.toMap(EventStoreRepository.EventCountPerTimeUnit::date, EventStoreRepository.EventCountPerTimeUnit::count));
+                .collect(Collectors.toMap(EventStoreRepository.EventCountPerTimeUnit::timestamp, EventStoreRepository.EventCountPerTimeUnit::count));
     }
 
 }

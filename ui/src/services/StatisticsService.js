@@ -38,12 +38,16 @@ export const getEventDistributionStatistics = (onSuccess, onError, onFailure) =>
 
 /**
  * Fetches statistics about the events consumed within a given timeframe
+ * @param {number} minTimestampMs Minimum timestamp in milliseconds to return in this query
+ * @param {number} maxTimestampMs Maximum timestamp in milliseconds to return in this query
+ * @param {number} intervalMs Interval in milliseconds during which events are grouped and counted
+ * @param {number} limit Maximum number of entries to return
  * @param {callback} onSuccess Called upon success and contains the response data
  * @param {callback} onError Called if an error occurred - will contain the error object with more details about what went wrong
  * @param {callback} onFailure Called if the request succeeded, but returned a non-OK HTTP code - will contain the entire response object
  */
-export const getEventConsumptionStatistics = (onSuccess, onError, onFailure) => {
-    fetch("/api/v1/statistics/kafka/events/consumed")
+export const getEventConsumptionStatistics = (minTimestampMs, maxTimestampMs, intervalMs, limit, onSuccess, onError, onFailure) => {
+    fetch(`/api/v1/statistics/kafka/events/consumed?minTimestampMs=${minTimestampMs}&maxTimestampMs=${maxTimestampMs}&intervalMs=${intervalMs}&limit=${limit}`)
         .then(response => {
             if (!response.ok && !!onFailure) {
                 onFailure(response);
