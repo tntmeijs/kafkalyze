@@ -16,7 +16,9 @@ tags:
   - name: "consumers"
     description: "Kafka consumer operations"
   - name: "statistics"
-    description: "System statistics for dashboarding purposes"
+    description: "Statistics for dashboarding purposes"
+  - name: "system"
+    description: "Server information"
 paths:
   /api/v1/topics:
     get:
@@ -212,6 +214,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/KafkaClusterStatistics"
+  /api/v1/system/liveness:
+    get:
+      tags:
+        - "system"
+      summary: "Check if the server is running"
+      description: "Use this endpoint to check if the server can be reached at all"
+      operationId: "livenessProbe"
+      responses:
+        "200":
+          description: "Server is up and running"
 components:
   schemas:
     TopicInformationV1:
