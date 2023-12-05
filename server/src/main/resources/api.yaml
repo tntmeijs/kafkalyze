@@ -97,6 +97,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/KafkaConsumerGroupsV1"
   /api/v1/events:
+    get:
+      tags:
+        - "events"
+      summary: "Query the event store database"
+      description: "Query the event store database to fetch relevant datapoints"
+      operationId: "queryEventStoreV1"
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            example: "{ sub: \"abc-xyz\" }"
+      responses:
+        "200":
+          description: "Query was executed successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventStoreQueryResultV1"
     post:
       tags:
         - "events"
@@ -324,3 +344,11 @@ components:
               groupId:
                 type: string
                 example: "consumer-group-one"
+    EventStoreQueryResultV1:
+      type: object
+      description: "Results of querying the event store database"
+      properties:
+        matches:
+          type: array
+          items:
+            type: object
