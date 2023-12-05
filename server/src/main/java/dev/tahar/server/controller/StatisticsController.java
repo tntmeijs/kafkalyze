@@ -8,7 +8,7 @@ import org.openapitools.api.StatisticsApi;
 import org.openapitools.model.EventConsumptionStatisticsV1;
 import org.openapitools.model.EventDistributionStatisticsV1;
 import org.openapitools.model.EventStorageStatisticsV1;
-import org.openapitools.model.KafkaClusterStatistics;
+import org.openapitools.model.KafkaClusterStatisticsV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +26,7 @@ public class StatisticsController implements StatisticsApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<KafkaClusterStatistics> fetchClusterStatistics() {
+    public ResponseEntity<KafkaClusterStatisticsV1> fetchClusterStatistics() {
         return ResponseEntity.ok(StatisticsMapper.INSTANCE.toOpenApiClusterStatistics(statisticsService.getForKafkaCluster()));
     }
 

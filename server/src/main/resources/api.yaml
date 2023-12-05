@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/KafkaConsumerGroups"
+                $ref: "#/components/schemas/KafkaConsumerGroupsV1"
   /api/v1/events:
     post:
       tags:
@@ -213,7 +213,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/KafkaClusterStatistics"
+                $ref: "#/components/schemas/KafkaClusterStatisticsV1"
   /api/v1/system/liveness:
     get:
       tags:
@@ -288,7 +288,7 @@ components:
           additionalProperties:
             type: integer
             format: int64
-    KafkaClusterStatistics:
+    KafkaClusterStatisticsV1:
       type: object
       description: "Kafka cluster statistics"
       properties:
@@ -312,7 +312,7 @@ components:
               isClusterController:
                 type: boolean
                 example: true
-    KafkaConsumerGroups:
+    KafkaConsumerGroupsV1:
       type: object
       description: "Kafka consumer groups information"
       properties:

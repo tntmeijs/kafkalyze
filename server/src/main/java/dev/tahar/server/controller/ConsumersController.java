@@ -5,6 +5,7 @@ import dev.tahar.server.service.KafkaAdminService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.ConsumersApi;
 import org.openapitools.model.KafkaConsumerGroups;
+import org.openapitools.model.KafkaConsumerGroupsV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,8 @@ public class ConsumersController implements ConsumersApi {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<KafkaConsumerGroups> fetchConsumerGroups(Optional<List<String>> status) {
-        final var body = new KafkaConsumerGroups();
+    public ResponseEntity<KafkaConsumerGroupsV1> fetchConsumerGroups(Optional<List<String>> status) {
+        final var body = new KafkaConsumerGroupsV1();
         kafkaAdminService
                 .listConsumerGroups()
                 .stream()
