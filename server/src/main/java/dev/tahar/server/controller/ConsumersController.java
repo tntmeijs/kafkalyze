@@ -4,7 +4,6 @@ import dev.tahar.server.mapping.ConsumersMapper;
 import dev.tahar.server.service.KafkaAdminService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.ConsumersApi;
-import org.openapitools.model.KafkaConsumerGroups;
 import org.openapitools.model.KafkaConsumerGroupsV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
